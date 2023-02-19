@@ -20,7 +20,7 @@ class AuthenticationService(
     @Autowired private val authenticationManager: AuthenticationManager
 ) {
     fun register(request: RegisterRequest): AuthenticationResponse {
-        val newUser = request.createUser(request, encoder)
+        val newUser = request.createUser(encoder)
         repository.save(newUser)
         val jwtToken = jwtService.generateToken(newUser) ?: throw Exception()
         return AuthenticationResponse(token = jwtToken)

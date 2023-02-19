@@ -11,12 +11,10 @@ data class RegisterRequest(
     val password: String
 )
 
-fun RegisterRequest.createUser(request: RegisterRequest, encoder: PasswordEncoder): UserEntity {
-    return UserEntity(
-        firstName = request.firstName,
-        lastName = request.lastName,
-        loginEmail = request.email,
-        loginPassword = encoder.encode(request.password),
-        role = Role.USER
-    )
-}
+fun RegisterRequest.createUser(encoder: PasswordEncoder) = UserEntity(
+    firstName = firstName,
+    lastName = lastName,
+    loginEmail = email,
+    loginPassword = encoder.encode(password),
+    role = Role.USER
+)
