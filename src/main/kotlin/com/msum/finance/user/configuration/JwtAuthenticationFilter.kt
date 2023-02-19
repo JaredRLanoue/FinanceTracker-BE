@@ -1,5 +1,6 @@
 package com.msum.finance.user.configuration
 
+import com.msum.finance.user.service.JwtService
 import com.msum.finance.user.service.UserService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -32,9 +33,9 @@ class JwtAuthenticationFilter(
         val userEmail: String? = jwtService.extractUsername(jwt)
 
         if (userEmail != null && SecurityContextHolder.getContext().authentication == null) {
-            val userEntity = userService.findByUsername(userEmail)
-            if (jwtService.isValidToken(jwt, userEntity)) {
-                val authToken = UsernamePasswordAuthenticationToken(userEntity, null, userEntity.authorities)
+            val userDetails = userService.findByUsername(userEmail)
+            if (jwtService.isValidToken(jwt, userDetails)) {
+                val authToken = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                 authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authToken
             }

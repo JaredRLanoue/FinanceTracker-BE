@@ -1,7 +1,7 @@
-package com.msum.finance.user.models.request
+package com.msum.finance.user.data.request
 
-import com.msum.finance.user.models.Role
-import com.msum.finance.user.models.entity.UserEntity
+import com.msum.finance.user.data.Role
+import com.msum.finance.user.data.entity.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
 
 data class RegisterRequest(
@@ -11,7 +11,7 @@ data class RegisterRequest(
     val password: String
 )
 
-fun RegisterRequest.createUser(encoder: PasswordEncoder) = UserEntity(
+fun RegisterRequest.createUser(encoder: PasswordEncoder) = UserDetails(
     firstName = firstName,
     lastName = lastName,
     loginEmail = email,

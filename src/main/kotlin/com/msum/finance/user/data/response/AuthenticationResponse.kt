@@ -1,4 +1,4 @@
-package com.msum.finance.user.models.view
+package com.msum.finance.user.data.response
 
 data class AuthenticationResponse(
     val token: String

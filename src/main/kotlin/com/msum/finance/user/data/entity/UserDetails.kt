@@ -1,6 +1,6 @@
-package com.msum.finance.user.models.entity
+package com.msum.finance.user.data.entity
 
-import com.msum.finance.user.models.Role
+import com.msum.finance.user.data.Role
 import jakarta.persistence.*
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -8,13 +8,14 @@ import java.util.*
 
 @Entity
 @Table(name = "users")
-data class UserEntity(
+data class UserDetails(
     @Id
     val id: UUID = UUID.randomUUID(),
     val firstName: String,
     val lastName: String,
     val loginEmail: String,
     val loginPassword: String,
+    val accessToken: String? = null,
     @Enumerated(EnumType.STRING)
     val role: Role
 ) : UserDetails {

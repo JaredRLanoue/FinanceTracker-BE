@@ -1,6 +1,7 @@
-package com.msum.finance.user.configuration
+package com.msum.finance.user.service
 
-import com.msum.finance.user.models.entity.UserEntity
+import com.msum.finance.common.configuration.Env
+import com.msum.finance.user.data.entity.UserDetails
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -23,24 +24,24 @@ class JwtService {
         return claimsResolver(claims)
     }
 
-    fun generateToken(userDetails: UserEntity): String? {
+    fun generateToken(userDetails: UserDetails): String {
         return generateToken(HashMap(), userDetails)
     }
 
-    fun generateToken(extractClaims: Map<String, JvmType.Object>, userEntity: UserEntity): String? {
+    fun generateToken(extractClaims: Map<String, JvmType.Object>, userDetails: UserDetails): String {
         return Jwts
             .builder()
             .setClaims(extractClaims)
-            .setSubject(userEntity.username)
+            .setSubject(userDetails.username)
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 24))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact()
     }
 
-    fun isValidToken(token: String, userEntity: UserEntity): Boolean {
+    fun isValidToken(token: String, userDetails: UserDetails): Boolean {
         val username: String? = extractUsername(token)
-        return(username == userEntity.username) && !isTokenExpired(token)
+        return(username == userDetails.username) && !isTokenExpired(token)
     }
 
     private fun isTokenExpired(token: String): Boolean {

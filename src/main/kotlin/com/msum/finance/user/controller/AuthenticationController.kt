@@ -1,8 +1,8 @@
 package com.msum.finance.user.controller
 
-import com.msum.finance.user.models.request.AuthenticationRequest
-import com.msum.finance.user.models.request.RegisterRequest
-import com.msum.finance.user.models.view.AuthenticationResponse
+import com.msum.finance.user.data.request.AuthenticationRequest
+import com.msum.finance.user.data.request.RegisterRequest
+import com.msum.finance.user.data.response.AuthenticationResponse
 import com.msum.finance.user.service.AuthenticationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity

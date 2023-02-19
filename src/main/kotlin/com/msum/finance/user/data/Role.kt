@@ -1,4 +1,4 @@
-package com.msum.finance.user.models
+package com.msum.finance.user.data
 
 enum class Role {
     USER,

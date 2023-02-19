@@ -39,6 +39,8 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    implementation("org.apache.logging.log4j:log4j-api:2.17.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.17.1")
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("org.postgresql:postgresql")
 // 	annotationProcessor("org.projectlombok:lombok")
