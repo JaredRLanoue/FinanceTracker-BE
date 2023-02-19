@@ -1,0 +1,12 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    volumes:
+      - /var/lib/docker/volumes/finance_data/_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: devsecret
+      POSTGRES_DB: finance_db
+    ports:
+      - "5432:5432"
