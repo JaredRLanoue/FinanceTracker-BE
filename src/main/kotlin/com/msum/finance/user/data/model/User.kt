@@ -1,26 +1,28 @@
-package com.msum.finance.user.data.entity
+package com.msum.finance.user.data.model
 
+import com.msum.finance.api.data.entity.AccountEntity
+import com.msum.finance.api.data.entity.toModel
+import com.msum.finance.api.data.model.toView
 import com.msum.finance.user.data.Role
-import jakarta.persistence.*
+import com.msum.finance.user.data.view.UserView
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.time.Instant
 import java.util.*
 
-@Entity
-@Table(name = "users")
-data class UserDetails(
-    @Id
+data class User(
     val id: UUID = UUID.randomUUID(),
     val firstName: String,
     val lastName: String,
     val loginEmail: String,
     val loginPassword: String,
-    val accessToken: String? = null,
-    @Enumerated(EnumType.STRING)
-    val role: Role
+    var accounts: List<AccountEntity?>,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val role: List<SimpleGrantedAuthority>
 ) : UserDetails {
     override fun getAuthorities(): List<SimpleGrantedAuthority> {
-        return listOf(SimpleGrantedAuthority(role.name))
+        return role
     }
 
     override fun getPassword(): String {
@@ -47,3 +49,14 @@ data class UserDetails(
         return true
     }
 }
+
+fun User.toView() = UserView(
+    id = id,
+    firstName = firstName,
+    lastName = lastName,
+    email = loginEmail,
+    role = Role.USER,
+    accounts = accounts.map { it?.toModel()?.toView() },
+    updatedAt = updatedAt,
+    createdAt = createdAt
+)

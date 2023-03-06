@@ -1,5 +1,6 @@
 package com.msum.finance.user.configuration
 
+import com.msum.finance.user.data.entity.toModel
 import com.msum.finance.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -17,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 class ApplicationConfiguration(@Autowired private val repository: UserRepository) {
     @Bean
     fun userDetailsService(): UserDetailsService {
-        return UserDetailsService { username -> repository.findByLoginEmail(username) ?: throw UsernameNotFoundException("Username not found!") }
+        return UserDetailsService { username -> repository.findByLoginEmail(username)?.toModel() ?: throw UsernameNotFoundException("Username not found!") }
     }
 
     @Bean
