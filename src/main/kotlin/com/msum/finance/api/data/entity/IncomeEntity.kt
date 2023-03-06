@@ -14,7 +14,7 @@ import java.util.*
 @Table(name = "incomes")
 class IncomeEntity(
     @Id
-    val id: UUID,
+    val id: UUID = UUID.randomUUID(),
     @ManyToOne
     @JoinColumn(name = "account_id")
     val account: AccountEntity,

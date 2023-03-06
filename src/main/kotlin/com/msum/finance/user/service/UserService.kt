@@ -1,13 +1,7 @@
 package com.msum.finance.user.service
 
-import com.msum.finance.api.data.entity.AccountEntity
-import com.msum.finance.api.data.entity.CategoryEntity
-import com.msum.finance.api.data.entity.ExpenseEntity
-import com.msum.finance.api.data.entity.LocationEntity
-import com.msum.finance.api.repository.AccountRepository
-import com.msum.finance.api.repository.CategoryRepository
-import com.msum.finance.api.repository.ExpenseRepository
-import com.msum.finance.api.repository.LocationRepository
+import com.msum.finance.api.data.entity.*
+import com.msum.finance.api.repository.*
 import com.msum.finance.user.data.Role
 import com.msum.finance.user.data.entity.UserEntity
 import com.msum.finance.user.data.entity.toModel
@@ -17,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.Instant
-import java.util.*
 
 @Service
 class UserService(
@@ -25,7 +18,8 @@ class UserService(
     @Autowired private val locationRepository: LocationRepository,
     @Autowired private val categoryRepository: CategoryRepository,
     @Autowired private val expenseRepository: ExpenseRepository,
-    @Autowired private val accountRepository: AccountRepository
+    @Autowired private val accountRepository: AccountRepository,
+    @Autowired private val incomeRepository: IncomeRepository
 ) {
     fun findByUsername(username: String): User {
         return repository.findByLoginEmail(username)?.toModel() ?: throw Exception("Email not found")
@@ -77,7 +71,7 @@ class UserService(
             )
         )
 
-        val transaction = expenseRepository.save(
+        val expense = expenseRepository.save(
             ExpenseEntity(
                 account = account,
                 category = category.name,
@@ -88,6 +82,16 @@ class UserService(
                 pending = false,
                 date = Instant.now(),
                 user = user
+            )
+        )
+
+        val income = incomeRepository.save(
+            IncomeEntity(
+                account = account,
+                user = user,
+                amount = BigDecimal(100),
+                date = Instant.now(),
+                name = "Biweekly Income"
             )
         )
     }
