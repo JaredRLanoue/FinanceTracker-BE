@@ -40,7 +40,7 @@ class AuthenticationService(
                 request.password
             )
         )
-        val user = userService.findByUsername(request.email)
+        val user = userService.getByUsername(request.email)
         val jwtToken = jwtService.generateToken(user)
         return AuthenticationResponse(token = jwtToken)
     }

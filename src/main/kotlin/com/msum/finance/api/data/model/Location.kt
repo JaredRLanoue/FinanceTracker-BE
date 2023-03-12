@@ -2,6 +2,7 @@ package com.msum.finance.api.data.model
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import com.msum.finance.api.data.entity.LocationEntity
 import com.msum.finance.api.data.view.LocationView
 import java.time.Instant
 import java.util.UUID
@@ -28,4 +29,14 @@ fun Location.toView() =
         postalCode = postalCode,
         createdAt = createdAt,
         updatedAt = updatedAt
+    )
+
+fun Location.toEntity() =
+    LocationEntity(
+        id = id,
+        address = address,
+        city = city,
+        state = state,
+        country = country,
+        postalCode = postalCode
     )

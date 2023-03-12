@@ -15,15 +15,14 @@ import java.util.*
 class ExpenseEntity(
     @Id
     val id: UUID = UUID.randomUUID(),
-    @ManyToOne
     @JoinColumn(name = "account_id")
-    val account: AccountEntity,
+    val accountId: UUID,
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: UserEntity,
     val category: String,
-    @OneToOne
-    val location: LocationEntity,
+//    @JoinColumn(name = "location_id")
+//    val locationId: UUID,
     val amount: BigDecimal,
     val description: String,
     val merchantName: String,
@@ -39,10 +38,10 @@ class ExpenseEntity(
 
 fun ExpenseEntity.toModel() = Expense(
     id = id,
-    accountId = account.id,
+    accountId = accountId,
     user = user.toModel(),
     category = category,
-    location = location.toModel(),
+//    locationId = locationId,
     amount = amount,
     description = description,
     merchantName = merchantName,

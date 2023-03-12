@@ -10,6 +10,7 @@ import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
 
+// TODO: Name has to be unique
 @Entity
 @Table(name = "accounts")
 class AccountEntity(
@@ -20,10 +21,11 @@ class AccountEntity(
     val user: UserEntity,
     val name: String,
     val type: String,
-    val balance: BigDecimal,
-    @OneToMany(mappedBy = "account", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    var balance: BigDecimal,
+    val startingBalance: BigDecimal,
+    @OneToMany(mappedBy = "accountId", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
     val expenses: List<ExpenseEntity> = emptyList(),
-    @OneToMany(mappedBy = "account", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "accountId", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
     val incomes: List<IncomeEntity> = emptyList(),
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -42,6 +44,7 @@ fun AccountEntity.toModel() =
         name = name,
         type = type,
         balance = balance,
+        startingBalance = startingBalance,
         createdAt = createdAt,
         updatedAt = updatedAt
     )

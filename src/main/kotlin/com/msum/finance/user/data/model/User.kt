@@ -4,9 +4,11 @@ import com.msum.finance.api.data.entity.AccountEntity
 import com.msum.finance.api.data.entity.toModel
 import com.msum.finance.api.data.model.toView
 import com.msum.finance.user.data.Role
+import com.msum.finance.user.data.entity.UserEntity
 import com.msum.finance.user.data.view.UserView
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
 
@@ -17,6 +19,7 @@ data class User(
     val loginEmail: String,
     val loginPassword: String,
     var accounts: List<AccountEntity?>,
+    var netWorth: BigDecimal = BigDecimal.ZERO,
     val createdAt: Instant,
     val updatedAt: Instant,
     val role: List<SimpleGrantedAuthority>
@@ -57,6 +60,20 @@ fun User.toView() = UserView(
     email = loginEmail,
     role = Role.USER,
     accounts = accounts.map { it?.toModel()?.toView() },
+    netWorth = netWorth,
     updatedAt = updatedAt,
     createdAt = createdAt
+)
+
+fun User.toEntity() = UserEntity(
+    id = id,
+    firstName = firstName,
+    lastName = lastName,
+    loginEmail = loginEmail,
+    loginPassword = loginPassword,
+    accounts = accounts,
+    netWorth = netWorth,
+    role = Role.USER,
+    createdAt = createdAt,
+    updatedAt = updatedAt
 )

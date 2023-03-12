@@ -7,6 +7,7 @@ import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
 
@@ -21,6 +22,7 @@ data class UserEntity(
     val loginPassword: String,
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
     val accounts: List<AccountEntity?> = listOf(),
+    val netWorth: BigDecimal = BigDecimal.ZERO,
     @Enumerated(EnumType.STRING)
     val role: Role,
     @CreatedDate
@@ -37,6 +39,7 @@ fun UserEntity.toModel() = User(
     lastName = lastName,
     loginEmail = loginEmail,
     loginPassword = loginPassword,
+    netWorth = netWorth,
     role = listOf(SimpleGrantedAuthority(role.name)),
     accounts = accounts,
     updatedAt = updatedAt,

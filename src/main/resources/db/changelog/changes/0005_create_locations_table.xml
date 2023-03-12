@@ -23,11 +23,11 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="expense_id"
-                                 baseTableName="locations"
-                                 referencedColumnNames="id"
-                                 referencedTableName="expenses"
-                                 constraintName="fk_locations_expenses"
-        />
+<!--        <addForeignKeyConstraint baseColumnNames="expense_id"-->
+<!--                                 baseTableName="locations"-->
+<!--                                 referencedColumnNames="id"-->
+<!--                                 referencedTableName="expenses"-->
+<!--                                 constraintName="fk_locations_expenses"-->
+<!--        />-->
     </changeSet>
 </databaseChangeLog>

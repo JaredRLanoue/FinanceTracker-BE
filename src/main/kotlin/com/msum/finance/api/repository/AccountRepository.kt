@@ -6,4 +6,10 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface AccountRepository : JpaRepository<AccountEntity, UUID>
+interface AccountRepository : JpaRepository<AccountEntity, UUID> {
+    fun findAllByUserId(userId: UUID): List<AccountEntity>
+
+    fun findByUserIdAndId(userId: UUID, accountId: UUID): AccountEntity?
+
+    fun deleteByUserIdAndId(userId: UUID, id: UUID)
+}

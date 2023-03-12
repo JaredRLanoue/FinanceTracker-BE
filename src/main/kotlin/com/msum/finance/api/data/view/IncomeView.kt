@@ -10,7 +10,9 @@ import java.util.*
 data class IncomeView(
     val id: UUID,
     val amount: BigDecimal,
-    val name: String,
+    val payerName: String,
+    val description: String,
+    val category: String,
     val date: Instant,
     val createdAt: Instant = Instant.now(),
     val updatedAt: Instant = Instant.now()

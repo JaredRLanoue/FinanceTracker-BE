@@ -15,14 +15,16 @@ import java.util.*
 class IncomeEntity(
     @Id
     val id: UUID = UUID.randomUUID(),
-    @ManyToOne
     @JoinColumn(name = "account_id")
-    val account: AccountEntity,
+    val accountId: UUID,
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: UserEntity,
     val amount: BigDecimal,
-    val name: String,
+    @Column(name = "payer_name")
+    val payerName: String,
+    val description: String,
+    val category: String,
     val date: Instant,
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -34,10 +36,12 @@ class IncomeEntity(
 
 fun IncomeEntity.toModel() = Income(
     id = id,
-    accountId = account.id,
+    accountId = accountId,
     user = user.toModel(),
     amount = amount,
-    name = name,
+    payerName = payerName,
+    description = description,
+    category = category,
     date = date,
     createdAt = createdAt,
     updatedAt = updatedAt

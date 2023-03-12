@@ -9,11 +9,12 @@ import java.util.*
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class AccountView(
     val id: UUID,
-    val expenses: List<ExpenseView>,
-    val incomes: List<IncomeView>,
     val name: String,
     val type: String,
     val balance: BigDecimal,
+    val startingBalance: BigDecimal,
+    val expenses: List<ExpenseView>,
+    val incomes: List<IncomeView>,
     val createdAt: Instant,
     val updatedAt: Instant
 )

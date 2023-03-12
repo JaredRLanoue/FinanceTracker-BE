@@ -16,6 +16,7 @@
             <column name="name" type="varchar(255)"/>
             <column name="type" type="varchar(255)"/>
             <column name="balance" type="numeric"/>
+            <column name="starting_balance" type="numeric"/>
             <column name="created_at" type="timestamptz">
                 <constraints nullable="false"/>
             </column>
