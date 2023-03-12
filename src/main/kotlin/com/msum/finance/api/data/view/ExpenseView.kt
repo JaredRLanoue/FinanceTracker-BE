@@ -10,7 +10,6 @@ import java.util.*
 data class ExpenseView(
     val id: UUID,
     val category: String,
-//    val locationId: UUID,
     val amount: BigDecimal,
     val description: String,
     val merchantName: String?,

@@ -21,8 +21,6 @@ class ExpenseEntity(
     @JoinColumn(name = "user_id")
     val user: UserEntity,
     val category: String,
-//    @JoinColumn(name = "location_id")
-//    val locationId: UUID,
     val amount: BigDecimal,
     val description: String,
     val merchantName: String,
@@ -41,7 +39,6 @@ fun ExpenseEntity.toModel() = Expense(
     accountId = accountId,
     user = user.toModel(),
     category = category,
-//    locationId = locationId,
     amount = amount,
     description = description,
     merchantName = merchantName,

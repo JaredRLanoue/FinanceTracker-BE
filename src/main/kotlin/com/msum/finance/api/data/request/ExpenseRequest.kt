@@ -8,7 +8,6 @@ import java.util.*
 
 data class ExpenseRequest(
     val accountId: UUID,
-//    val locationId: UUID,
     val category: String, // modify to use a created category, but stick to a simple string for now
     val amount: BigDecimal,
     val description: String,
@@ -23,7 +22,6 @@ fun ExpenseRequest.toModel(user: User) =
     Expense(
         user = user,
         accountId = accountId,
-//        locationId = locationId,
         category = category,
         amount = if (amount < BigDecimal.ZERO) amount else amount.negate(),
         description = description,

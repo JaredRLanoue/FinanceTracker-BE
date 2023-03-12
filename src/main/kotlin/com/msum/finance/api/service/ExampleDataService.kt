@@ -13,7 +13,6 @@ import java.time.Instant
 @Service
 class ExampleDataService(
     @Autowired private val repository: UserRepository,
-    @Autowired private val locationRepository: LocationRepository,
     @Autowired private val categoryRepository: CategoryRepository,
     @Autowired private val expenseRepository: ExpenseRepository,
     @Autowired private val accountRepository: AccountRepository,
@@ -30,15 +29,6 @@ class ExampleDataService(
             )
         )
 
-        val location = locationRepository.save(
-            LocationEntity(
-                address = "2014 Forest Hills Drive",
-                city = "Fayetteville",
-                state = "NC",
-                country = "US",
-                postalCode = "28303"
-            )
-        )
         val category = categoryRepository.save(
             CategoryEntity(
                 name = "Retail"
@@ -57,11 +47,10 @@ class ExampleDataService(
             )
         )
 
-        val expense = expenseRepository.save(
+        expenseRepository.save(
             ExpenseEntity(
                 accountId = account.id,
                 category = category.name,
-//                locationId = location.id,
                 amount = BigDecimal(250),
                 description = "The Last of Us Collectors Edition",
                 merchantName = "GameStop",
@@ -71,7 +60,7 @@ class ExampleDataService(
             )
         )
 
-        val income = incomeRepository.save(
+        incomeRepository.save(
             IncomeEntity(
                 accountId = account.id,
                 user = user,
