@@ -1,7 +1,7 @@
 package com.msum.finance.user.data.entity
 
 import com.msum.finance.api.data.entity.AccountEntity
-import com.msum.finance.user.data.Role
+import com.msum.finance.user.data.model.Role
 import com.msum.finance.user.data.model.User
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate

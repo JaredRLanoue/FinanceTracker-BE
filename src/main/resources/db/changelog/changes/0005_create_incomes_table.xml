@@ -12,7 +12,6 @@
             </column>
             <column name="user_id" type="uuid"/>
             <column name="account_id" type="uuid"/>
-            <column name="category" type="varchar(255)"/>
             <column name="description" type="varchar(255)"/>
             <column name="amount" type="numeric"/>
             <column name="payer_name" type="varchar(255)"/>

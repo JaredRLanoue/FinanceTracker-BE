@@ -1,6 +1,7 @@
 package com.msum.finance.api.data.request
 
 import com.msum.finance.api.data.model.Expense
+import com.msum.finance.api.data.model.ExpenseCategory
 import com.msum.finance.user.data.model.User
 import java.math.BigDecimal
 import java.time.Instant
@@ -8,7 +9,7 @@ import java.util.*
 
 data class ExpenseRequest(
     val accountId: UUID,
-    val category: String, // modify to use a created category, but stick to a simple string for now
+    val categoryId: UUID,
     val amount: BigDecimal,
     val description: String,
     val merchantName: String,
@@ -18,11 +19,11 @@ data class ExpenseRequest(
     val updatedAt: Instant = Instant.now()
 )
 
-fun ExpenseRequest.toModel(user: User) =
+fun ExpenseRequest.toModel(user: User, expenseCategory: ExpenseCategory) =
     Expense(
         user = user,
+        expenseCategory = expenseCategory,
         accountId = accountId,
-        category = category,
         amount = if (amount < BigDecimal.ZERO) amount else amount.negate(),
         description = description,
         merchantName = merchantName,

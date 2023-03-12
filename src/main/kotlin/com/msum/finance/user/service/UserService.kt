@@ -1,12 +1,12 @@
 package com.msum.finance.user.service
 
-import com.msum.finance.api.repository.*
 import com.msum.finance.user.data.entity.UserEntity
 import com.msum.finance.user.data.entity.toModel
 import com.msum.finance.user.data.model.User
 import com.msum.finance.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class UserService(
@@ -30,11 +30,9 @@ class UserService(
         return repository.findAll()
     }
 
-//    fun calculateNetWorth(user: User) {
-//        val accounts = accountRepository.findAllByUserId(user.id)
-//        val calculatedNetWorth = accounts.sumOf { account ->
-//            account.startingBalance + account.expenses.sumOf { it.amount } + account.incomes.sumOf { it.amount }
-//        }
-//        repository.save(user.apply { netWorth = calculatedNetWorth }.toEntity())
-//    }
+    fun checkAccountExistsForUser(accountId: UUID, user: User) {
+        if (accountId !in user.accounts.map { it?.id }) {
+            throw Exception("Account doesn't exist for the user")
+        }
+    }
 }

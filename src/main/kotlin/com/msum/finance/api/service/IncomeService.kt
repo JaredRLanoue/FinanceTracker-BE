@@ -21,6 +21,7 @@ class IncomeService(
     @Autowired private val eventPublisher: ApplicationEventPublisher
 ) {
     fun create(user: User, request: IncomeRequest) {
+        userService.checkAccountExistsForUser(request.accountId, user)
         val userData = userService.getByUserEmail(user.loginEmail) ?: throw Exception("User doesn't exist")
 
         incomeRepository.save(request.toModel(userData).toEntity())
@@ -44,6 +45,7 @@ class IncomeService(
 
     // Create an update request and change incomeRequest to incomeCreateRequest?
     fun update(user: User, request: IncomeRequest, incomeId: UUID) {
+        userService.checkAccountExistsForUser(request.accountId, user)
         val userData = userService.getByUserEmail(user.loginEmail) ?: throw Exception("User doesn't exist!")
         val incomeData = incomeRepository.findByUserIdAndId(user.id, incomeId)?.toModel() ?: throw Exception("Account doesn't exist")
 

@@ -3,7 +3,6 @@ package com.msum.finance.user.data.model
 import com.msum.finance.api.data.entity.AccountEntity
 import com.msum.finance.api.data.entity.toModel
 import com.msum.finance.api.data.model.toView
-import com.msum.finance.user.data.Role
 import com.msum.finance.user.data.entity.UserEntity
 import com.msum.finance.user.data.view.UserView
 import org.springframework.security.core.authority.SimpleGrantedAuthority

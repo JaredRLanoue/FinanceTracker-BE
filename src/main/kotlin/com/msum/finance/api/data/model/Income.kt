@@ -14,7 +14,6 @@ data class Income(
     val user: User,
     val amount: BigDecimal,
     val description: String,
-    val category: String,
     val payerName: String,
     val date: Instant,
     val createdAt: Instant,
@@ -27,7 +26,6 @@ fun Income.toView() =
         amount = amount,
         payerName = payerName,
         description = description,
-        category = category,
         date = date,
         createdAt = createdAt,
         updatedAt = updatedAt
@@ -41,6 +39,5 @@ fun Income.toEntity() =
         user = user.toEntity(),
         payerName = payerName,
         description = description,
-        category = category,
         date = date
     )

@@ -12,7 +12,7 @@
             </column>
             <column name="user_id" type="uuid"/>
             <column name="account_id" type="uuid"/>
-            <column name="category" type="varchar(255)"/>
+            <column name="category_id" type="uuid"/>
             <column name="amount" type="numeric"/>
             <column name="description" type="varchar(255)"/>
             <column name="merchant_name" type="varchar(255)"/>

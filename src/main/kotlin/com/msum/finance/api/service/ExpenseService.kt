@@ -18,12 +18,15 @@ import java.util.*
 class ExpenseService(
     @Autowired private val expenseRepository: ExpenseRepository,
     @Autowired private val userService: UserService,
+    @Autowired private val expenseCategoryService: ExpenseCategoryService,
     @Autowired private val eventPublisher: ApplicationEventPublisher
 ) {
     fun create(user: User, request: ExpenseRequest) {
+        userService.checkAccountExistsForUser(request.accountId, user)
         val userData = userService.getByUserEmail(user.loginEmail) ?: throw Exception("User doesn't exist")
+        val categoryData = expenseCategoryService.findById(user, request.categoryId) ?: throw Exception("Category doesn't exist")
 
-        expenseRepository.save(request.toModel(userData).toEntity())
+        expenseRepository.save(request.toModel(userData, categoryData).toEntity())
         eventPublisher.publishEvent(NetWorthEvent(user))
     }
 
@@ -43,10 +46,12 @@ class ExpenseService(
     }
 
     fun update(user: User, request: ExpenseRequest, expenseId: UUID) {
+        userService.checkAccountExistsForUser(request.accountId, user)
         val userData = userService.getByUserEmail(user.loginEmail) ?: throw Exception("User doesn't exist")
-        val accountData = expenseRepository.findByUserIdAndId(user.id, expenseId)?.toModel() ?: throw Exception("Account doesn't exist")
+        val expenseData = expenseRepository.findByUserIdAndId(user.id, expenseId)?.toModel() ?: throw Exception("Account doesn't exist")
+        val categoryData = expenseCategoryService.findById(user, request.categoryId) ?: throw Exception("Category doesn't exist")
 
         eventPublisher.publishEvent(NetWorthEvent(user))
-        expenseRepository.save(request.toModel(userData).apply { id = accountData.id }.toEntity())
+        expenseRepository.save(request.toModel(userData, categoryData).apply { id = expenseData.id }.toEntity())
     }
 }

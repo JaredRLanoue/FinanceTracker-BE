@@ -1,7 +1,7 @@
 package com.msum.finance.user.data.request
 
-import com.msum.finance.user.data.Role
 import com.msum.finance.user.data.entity.UserEntity
+import com.msum.finance.user.data.model.Role
 
 data class RegisterRequest(
     val firstName: String,

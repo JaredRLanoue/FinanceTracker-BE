@@ -2,8 +2,8 @@ package com.msum.finance.api.service
 
 import com.msum.finance.api.data.entity.*
 import com.msum.finance.api.repository.*
-import com.msum.finance.user.data.Role
 import com.msum.finance.user.data.entity.UserEntity
+import com.msum.finance.user.data.model.Role
 import com.msum.finance.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -13,7 +13,7 @@ import java.time.Instant
 @Service
 class ExampleDataService(
     @Autowired private val repository: UserRepository,
-    @Autowired private val categoryRepository: CategoryRepository,
+    @Autowired private val expenseCategoryRepository: ExpenseCategoryRepository,
     @Autowired private val expenseRepository: ExpenseRepository,
     @Autowired private val accountRepository: AccountRepository,
     @Autowired private val incomeRepository: IncomeRepository
@@ -29,9 +29,10 @@ class ExampleDataService(
             )
         )
 
-        val category = categoryRepository.save(
-            CategoryEntity(
-                name = "Retail"
+        val category = expenseCategoryRepository.save(
+            ExpenseCategoryEntity(
+                name = "Retail",
+                user = user
             )
         )
 
@@ -50,7 +51,7 @@ class ExampleDataService(
         expenseRepository.save(
             ExpenseEntity(
                 accountId = account.id,
-                category = category.name,
+                category = category,
                 amount = BigDecimal(250),
                 description = "The Last of Us Collectors Edition",
                 merchantName = "GameStop",
@@ -67,8 +68,7 @@ class ExampleDataService(
                 amount = BigDecimal(100),
                 date = Instant.now(),
                 payerName = "Bushel",
-                description = "Biweekly income",
-                category = "Payroll"
+                description = "Biweekly income"
             )
         )
     }
