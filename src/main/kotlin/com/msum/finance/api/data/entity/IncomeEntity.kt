@@ -24,7 +24,6 @@ class IncomeEntity(
     @Column(name = "payer_name")
     val payerName: String,
     val description: String,
-    val category: String,
     val date: Instant,
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -41,7 +40,6 @@ fun IncomeEntity.toModel() = Income(
     amount = amount,
     payerName = payerName,
     description = description,
-    category = category,
     date = date,
     createdAt = createdAt,
     updatedAt = updatedAt

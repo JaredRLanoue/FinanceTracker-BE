@@ -20,7 +20,9 @@ class ExpenseEntity(
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: UserEntity,
-    val category: String,
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    val category: ExpenseCategoryEntity,
     val amount: BigDecimal,
     val description: String,
     val merchantName: String,
@@ -38,7 +40,7 @@ fun ExpenseEntity.toModel() = Expense(
     id = id,
     accountId = accountId,
     user = user.toModel(),
-    category = category,
+    expenseCategory = category.toModel(),
     amount = amount,
     description = description,
     merchantName = merchantName,
