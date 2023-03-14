@@ -29,6 +29,7 @@
                                  referencedColumnNames="id"
                                  referencedTableName="users"
                                  constraintName="fk_user_account"
+                                 onDelete="CASCADE"
         />
     </changeSet>
 </databaseChangeLog>

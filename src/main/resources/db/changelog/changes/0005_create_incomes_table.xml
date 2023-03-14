@@ -23,5 +23,19 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <addForeignKeyConstraint baseColumnNames="account_id"
+                                 baseTableName="incomes"
+                                 referencedColumnNames="id"
+                                 referencedTableName="accounts"
+                                 constraintName="fk_income_account"
+                                 onDelete="CASCADE"
+        />
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="incomes"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"
+                                 constraintName="fk_income_user"
+                                 onDelete="CASCADE"
+        />
     </changeSet>
 </databaseChangeLog>

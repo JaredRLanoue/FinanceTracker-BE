@@ -25,5 +25,19 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <addForeignKeyConstraint baseColumnNames="account_id"
+                                 baseTableName="expenses"
+                                 referencedColumnNames="id"
+                                 referencedTableName="accounts"
+                                 constraintName="fk_expense_account"
+                                 onDelete="CASCADE"
+        />
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="expenses"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"
+                                 constraintName="fk_expense_user"
+                                 onDelete="CASCADE"
+        />
     </changeSet>
 </databaseChangeLog>

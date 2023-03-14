@@ -19,7 +19,7 @@ class ExpenseCategoryService(
     @Autowired private val expenseCategoryRepository: ExpenseCategoryRepository,
     @Autowired private val userService: UserService
 ) {
-    // TODO: For now, I'm using just the income categories. In the future I will add expense categories.
+    // TODO: For now, I'm using just the expense categories. In the future I will add income categories.
     fun create(user: User, request: ExpenseCategoryRequest) {
         if (expenseCategoryRepository.findByUserIdAndName(user.id, request.name) != null) {
             throw Exception("Category already exists")

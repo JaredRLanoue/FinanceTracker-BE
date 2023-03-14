@@ -19,5 +19,15 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="expenses_categories"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"
+                                 constraintName="fk_expense_category_user"
+                                 onDelete="CASCADE"
+        />
+<!--        <sql splitStatements="false">-->
+<!--            ALTER TABLE expenses_categories ADD CONSTRAINT unique_category_name_per_user UNIQUE (user_id, name);-->
+<!--        </sql>-->
     </changeSet>
 </databaseChangeLog>

@@ -52,4 +52,13 @@ class IncomeService(
         eventPublisher.publishEvent(NetWorthEvent(user))
         incomeRepository.save(request.toModel(userData).apply { id = incomeData.id }.toEntity())
     }
+
+    // TODO: Can potentially just put this into one function, with option to choose date range and sort order
+    fun findAllOrderByDescending(user: User): List<Income> {
+        return incomeRepository.findAllByUserIdOrderByAmountDesc(user.id).map { it.toModel() }
+    }
+
+    fun findAllOrderByAscending(user: User): List<Income> {
+        return incomeRepository.findAllByUserIdOrderByAmountAsc(user.id).map { it.toModel() }
+    }
 }

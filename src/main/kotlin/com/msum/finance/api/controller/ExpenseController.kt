@@ -1,5 +1,6 @@
 package com.msum.finance.api.controller
 
+import com.msum.finance.api.data.model.ExpenseCategoriesTotal
 import com.msum.finance.api.data.model.toView
 import com.msum.finance.api.data.request.ExpenseRequest
 import com.msum.finance.api.data.view.ExpenseView
@@ -38,5 +39,10 @@ class ExpenseController(
     @PutMapping("/update/{expenseId}")
     fun update(@AuthenticationPrincipal user: User, @RequestBody request: ExpenseRequest, @PathVariable expenseId: UUID) {
         return expenseService.update(user, request, expenseId)
+    }
+
+    @GetMapping("/categories")
+    fun findCategoryTotals(@AuthenticationPrincipal user: User): ExpenseCategoriesTotal {
+        return expenseService.findAllCategoryTotals(user)
     }
 }
