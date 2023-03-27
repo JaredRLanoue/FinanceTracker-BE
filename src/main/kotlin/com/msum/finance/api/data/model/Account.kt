@@ -4,7 +4,6 @@ import com.msum.finance.api.data.entity.AccountEntity
 import com.msum.finance.api.data.view.AccountView
 import com.msum.finance.user.data.model.User
 import com.msum.finance.user.data.model.toEntity
-import com.msum.finance.user.data.model.toView
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
@@ -43,6 +42,6 @@ fun Account.toEntity() =
         type = type,
         balance = balance,
         startingBalance = startingBalance,
-        expenses = expenses.map { it.toEntity() },
-        incomes = incomes.map { it.toEntity() }
+        expenses = expenses.map { it.toExpenseCategoryEntity() },
+        incomes = incomes.map { it.toIncomeCategoryEntity() }
     )

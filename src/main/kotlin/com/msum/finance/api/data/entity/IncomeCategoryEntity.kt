@@ -10,8 +10,8 @@ import java.time.Instant
 import java.util.UUID
 
 @Entity
-@Table(name = "expenses_categories")
-class ExpenseCategoryEntity(
+@Table(name = "incomes_categories")
+class IncomeCategoryEntity(
     @Id
     val id: UUID = UUID.randomUUID(),
     @ManyToOne
@@ -26,7 +26,7 @@ class ExpenseCategoryEntity(
     val updatedAt: Instant = Instant.now()
 )
 
-fun ExpenseCategoryEntity.toModel() =
+fun IncomeCategoryEntity.toModel() =
     Category(
         id = id,
         user = user.toModel(),

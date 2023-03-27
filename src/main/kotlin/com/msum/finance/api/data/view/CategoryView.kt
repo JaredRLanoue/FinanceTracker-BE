@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.util.*
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class ExpenseCategoryView(
+data class CategoryView(
     val id: UUID,
     val name: String
 )

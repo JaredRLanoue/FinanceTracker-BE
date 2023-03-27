@@ -16,7 +16,6 @@ class NetWorthService(
     @Autowired private val logger: Logger
 ) {
     fun calculateNetWorth(user: User) {
-        // Calculate only on one specific account, or just do all per user for simplicity?
         val accounts = user.accounts
         val calculatedBalance = accounts.mapNotNull { account ->
             val startingBalance = account?.startingBalance ?: BigDecimal.ZERO

@@ -5,18 +5,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
            https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
-    <changeSet id="0005_create_income_table.xml" author="jlanoue">
-        <createTable tableName="incomes">
+    <changeSet id="0004_create_incomes_categories_table.xml" author="jlanoue">
+        <createTable tableName="incomes_categories">
             <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="user_id" type="uuid"/>
-            <column name="account_id" type="uuid"/>
-            <column name="category_id" type="uuid"/>
-            <column name="description" type="varchar(255)"/>
-            <column name="amount" type="numeric"/>
-            <column name="payer_name" type="varchar(255)"/>
-            <column name="date" type="timestamptz"/>
+            <column name="name" type="varchar(255)"/>
             <column name="created_at" type="timestamptz">
                 <constraints nullable="false"/>
             </column>
@@ -24,19 +19,15 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="account_id"
-                                 baseTableName="incomes"
-                                 referencedColumnNames="id"
-                                 referencedTableName="accounts"
-                                 constraintName="fk_income_account"
-                                 onDelete="CASCADE"
-        />
         <addForeignKeyConstraint baseColumnNames="user_id"
-                                 baseTableName="incomes"
+                                 baseTableName="incomes_categories"
                                  referencedColumnNames="id"
                                  referencedTableName="users"
-                                 constraintName="fk_income_user"
+                                 constraintName="fk_incomes_category_user"
                                  onDelete="CASCADE"
         />
+        <!--        <sql splitStatements="false">-->
+        <!--            ALTER TABLE expenses_categories ADD CONSTRAINT unique_category_name_per_user UNIQUE (user_id, name);-->
+        <!--        </sql>-->
     </changeSet>
 </databaseChangeLog>

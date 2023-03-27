@@ -11,6 +11,7 @@ import java.util.*
 data class Income(
     var id: UUID = UUID.randomUUID(),
     val accountId: UUID,
+    val category: Category,
     val user: User,
     val amount: BigDecimal,
     val description: String,
@@ -24,6 +25,7 @@ fun Income.toView() =
     IncomeView(
         id = id,
         amount = amount,
+        category = category.name,
         payerName = payerName,
         description = description,
         date = date,
@@ -31,11 +33,12 @@ fun Income.toView() =
         updatedAt = updatedAt
     )
 
-fun Income.toEntity() =
+fun Income.toIncomeCategoryEntity() =
     IncomeEntity(
         id = id,
         amount = amount,
         accountId = accountId,
+        category = category.toIncomeCategoryEntity(),
         user = user.toEntity(),
         payerName = payerName,
         description = description,

@@ -1,6 +1,7 @@
 package com.msum.finance.user.service
 
 import com.msum.finance.api.service.ExpenseCategoryService
+import com.msum.finance.api.service.IncomeCategoryService
 import com.msum.finance.user.data.entity.toModel
 import com.msum.finance.user.data.request.AuthenticationRequest
 import com.msum.finance.user.data.request.RegisterRequest
@@ -17,7 +18,8 @@ import org.springframework.stereotype.Service
 @Service
 class AuthenticationService(
     @Autowired private val repository: UserRepository,
-    @Autowired private val categoryService: ExpenseCategoryService,
+    @Autowired private val expenseCategoryService: ExpenseCategoryService,
+    @Autowired private val incomeCategoryService: IncomeCategoryService,
     @Autowired private val encoder: PasswordEncoder,
     @Autowired private val jwtService: JwtService,
     @Autowired private val userService: UserService,
@@ -25,15 +27,19 @@ class AuthenticationService(
     @Autowired private val logger: Logger
 ) {
     fun register(request: RegisterRequest): AuthenticationResponse {
-        if (repository.existsByLoginEmail(request.email)) throw Exception("User already exists")
+        if (repository.existsByLoginEmail(request.email)) {
+            throw Exception("User already exists")
+        }
 
-        request.apply { password = encoder.encode(password) }
-        val newUser = request.createUser()
+        val newUser = request.apply { password = encoder.encode(password) }.createUser()
         val savedUser = repository.save(newUser).toModel()
-        categoryService.saveDefaults(savedUser)
+
+        expenseCategoryService.saveDefaults(savedUser)
+        incomeCategoryService.saveDefaults(savedUser)
+
         logger.info("User created with ID: ${newUser.id}")
 
-        val jwtToken = jwtService.generateToken(newUser.toModel())
+        val jwtToken = jwtService.generateToken(savedUser)
         return AuthenticationResponse(token = jwtToken)
     }
 

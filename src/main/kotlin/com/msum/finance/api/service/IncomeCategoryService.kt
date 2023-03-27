@@ -1,12 +1,12 @@
 package com.msum.finance.api.service
 
-import com.msum.finance.api.data.entity.ExpenseCategoryEntity
+import com.msum.finance.api.data.entity.IncomeCategoryEntity
 import com.msum.finance.api.data.entity.toModel
 import com.msum.finance.api.data.model.Category
-import com.msum.finance.api.data.model.toExpenseCategoryEntity
+import com.msum.finance.api.data.model.toIncomeCategoryEntity
 import com.msum.finance.api.data.request.CategoryRequest
 import com.msum.finance.api.data.request.toModel
-import com.msum.finance.api.repository.ExpenseCategoryRepository
+import com.msum.finance.api.repository.IncomeCategoryRepository
 import com.msum.finance.user.data.model.User
 import com.msum.finance.user.data.model.toEntity
 import com.msum.finance.user.service.UserService
@@ -15,44 +15,43 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class ExpenseCategoryService(
-    @Autowired private val expenseCategoryRepository: ExpenseCategoryRepository,
+class IncomeCategoryService(
+    @Autowired private val incomeCategoryRepository: IncomeCategoryRepository,
     @Autowired private val userService: UserService
 ) {
-    // TODO: For now, I'm using just the expense categories. In the future I will add income categories.
     fun create(user: User, request: CategoryRequest) {
-        if (expenseCategoryRepository.findByUserIdAndName(user.id, request.name) != null) {
+        if (incomeCategoryRepository.findByUserIdAndName(user.id, request.name) != null) {
             throw Exception("Category already exists")
         }
         val userData = userService.getByUserEmail(user.loginEmail) ?: throw Exception("User doesn't exist")
-        expenseCategoryRepository.save(request.toModel(userData).toExpenseCategoryEntity())
+        incomeCategoryRepository.save(request.toModel(userData).toIncomeCategoryEntity())
     }
 
     fun findAll(user: User): List<Category> {
-        return expenseCategoryRepository.findAllByUserId(user.id).map { it.toModel() }
+        return incomeCategoryRepository.findAllByUserId(user.id).map { it.toModel() }
     }
 
     fun findById(user: User, accountId: UUID): Category? {
-        return expenseCategoryRepository.findByUserIdAndId(user.id, accountId)?.toModel()
+        return incomeCategoryRepository.findByUserIdAndId(user.id, accountId)?.toModel()
     }
 
     fun deleteByIdIfNotInUse(user: User, categoryId: UUID) {
-        expenseCategoryRepository.deleteByUserIdAndId(user.id, categoryId)
+        incomeCategoryRepository.deleteByUserIdAndId(user.id, categoryId)
     }
 
     fun saveDefaults(user: User) {
         val defaultCategories = listOf(
-            "Housing",
-            "Transportation",
-            "Food and Dining",
-            "Entertainment",
-            "Personal Care",
-            "Health Care",
-            "Debt"
+            "Wages",
+            "Rental",
+            "Investment Gains",
+            "Business",
+            "Gifts",
+            "Refunds and Reimbursements",
+            "Freelance"
         )
 
         defaultCategories.forEach { category ->
-            expenseCategoryRepository.save(ExpenseCategoryEntity(name = category, user = user.toEntity()))
+            incomeCategoryRepository.save(IncomeCategoryEntity(name = category, user = user.toEntity()))
         }
     }
 }

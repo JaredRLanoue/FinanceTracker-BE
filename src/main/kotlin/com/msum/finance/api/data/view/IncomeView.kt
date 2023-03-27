@@ -12,6 +12,7 @@ data class IncomeView(
     val amount: BigDecimal,
     val payerName: String,
     val description: String,
+    val category: String,
     val date: Instant,
     val createdAt: Instant = Instant.now(),
     val updatedAt: Instant = Instant.now()

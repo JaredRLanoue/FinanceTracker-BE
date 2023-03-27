@@ -11,7 +11,7 @@ import java.util.UUID
 data class Expense(
     var id: UUID = UUID.randomUUID(),
     val accountId: UUID,
-    val expenseCategory: ExpenseCategory,
+    val category: Category,
     val user: User,
     val amount: BigDecimal,
     val description: String,
@@ -24,7 +24,7 @@ data class Expense(
 
 fun Expense.toView() = ExpenseView(
     id = id,
-    category = expenseCategory.name,
+    category = category.name,
     amount = amount,
     description = description,
     merchantName = merchantName,
@@ -35,10 +35,10 @@ fun Expense.toView() = ExpenseView(
 
 )
 
-fun Expense.toEntity() = ExpenseEntity(
+fun Expense.toExpenseCategoryEntity() = ExpenseEntity(
     id = id,
     accountId = accountId,
-    category = expenseCategory.toEntity(),
+    category = category.toExpenseCategoryEntity(),
     user = user.toEntity(),
     amount = amount,
     description = description,

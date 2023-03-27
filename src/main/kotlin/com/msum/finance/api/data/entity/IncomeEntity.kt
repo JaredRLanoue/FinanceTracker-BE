@@ -20,6 +20,9 @@ class IncomeEntity(
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: UserEntity,
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    val category: IncomeCategoryEntity,
     val amount: BigDecimal,
     @Column(name = "payer_name")
     val payerName: String,
@@ -36,6 +39,7 @@ class IncomeEntity(
 fun IncomeEntity.toModel() = Income(
     id = id,
     accountId = accountId,
+    category = category.toModel(),
     user = user.toModel(),
     amount = amount,
     payerName = payerName,

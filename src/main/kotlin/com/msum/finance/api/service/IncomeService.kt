@@ -1,8 +1,7 @@
 package com.msum.finance.api.service
 
 import com.msum.finance.api.data.entity.toModel
-import com.msum.finance.api.data.model.Income
-import com.msum.finance.api.data.model.toEntity
+import com.msum.finance.api.data.model.*
 import com.msum.finance.api.data.request.IncomeRequest
 import com.msum.finance.api.data.request.toModel
 import com.msum.finance.api.event.NetWorthEvent
@@ -12,20 +11,39 @@ import com.msum.finance.user.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.util.*
 
 @Service
 class IncomeService(
     @Autowired private val incomeRepository: IncomeRepository,
     @Autowired private val userService: UserService,
+    @Autowired private val incomeCategoryService: IncomeCategoryService,
     @Autowired private val eventPublisher: ApplicationEventPublisher
 ) {
     fun create(user: User, request: IncomeRequest) {
         userService.checkAccountExistsForUser(request.accountId, user)
         val userData = userService.getByUserEmail(user.loginEmail) ?: throw Exception("User doesn't exist")
+        val categoryData =
+            incomeCategoryService.findById(user, request.categoryId) ?: throw Exception("Category doesn't exist")
 
-        incomeRepository.save(request.toModel(userData).toEntity())
+        incomeRepository.save(request.toModel(userData, categoryData).toIncomeCategoryEntity())
         eventPublisher.publishEvent(NetWorthEvent(user))
+    }
+
+    fun findAllCategoryTotals(user: User): CategoriesTotal {
+        val categories = incomeRepository.findCategoryTotalsByUser(user.id)
+            .map { result ->
+                CategoryTotal(
+                    category = result["category"] as String,
+                    total = (result["total"] as BigDecimal)
+                )
+            }
+        val totalExpenses = user.accounts.sumOf { account ->
+            account?.incomes?.sumOf { it.amount } ?: BigDecimal.ZERO
+        }
+
+        return CategoriesTotal(categories = categories, total = totalExpenses)
     }
 
     fun findAll(user: User): List<Income> {
@@ -47,10 +65,13 @@ class IncomeService(
     fun update(user: User, request: IncomeRequest, incomeId: UUID) {
         userService.checkAccountExistsForUser(request.accountId, user)
         val userData = userService.getByUserEmail(user.loginEmail) ?: throw Exception("User doesn't exist!")
-        val incomeData = incomeRepository.findByUserIdAndId(user.id, incomeId)?.toModel() ?: throw Exception("Account doesn't exist")
+        val incomeData =
+            incomeRepository.findByUserIdAndId(user.id, incomeId)?.toModel() ?: throw Exception("Account doesn't exist")
+        val categoryData =
+            incomeCategoryService.findById(user, request.categoryId) ?: throw Exception("Category doesn't exist")
 
         eventPublisher.publishEvent(NetWorthEvent(user))
-        incomeRepository.save(request.toModel(userData).apply { id = incomeData.id }.toEntity())
+        incomeRepository.save(request.toModel(userData, categoryData).apply { id = incomeData.id }.toIncomeCategoryEntity())
     }
 
     // TODO: Can potentially just put this into one function, with option to choose date range and sort order

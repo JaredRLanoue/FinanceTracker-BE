@@ -1,16 +1,17 @@
 package com.msum.finance.api.service
 
 import com.msum.finance.api.data.entity.toModel
+import com.msum.finance.api.data.model.CategoriesTotal
 import com.msum.finance.api.data.model.CategoryTotal
 import com.msum.finance.api.data.model.Expense
-import com.msum.finance.api.data.model.ExpenseCategoriesTotal
-import com.msum.finance.api.data.model.toEntity
+import com.msum.finance.api.data.model.toExpenseCategoryEntity
 import com.msum.finance.api.data.request.ExpenseRequest
 import com.msum.finance.api.data.request.toModel
 import com.msum.finance.api.event.NetWorthEvent
 import com.msum.finance.api.repository.ExpenseRepository
 import com.msum.finance.user.data.model.User
 import com.msum.finance.user.service.UserService
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
@@ -33,23 +34,23 @@ class ExpenseService(
         val categoryData =
             expenseCategoryService.findById(user, request.categoryId) ?: throw Exception("Category doesn't exist")
 
-        expenseRepository.save(request.toModel(userData, categoryData).toEntity())
+        expenseRepository.save(request.toModel(userData, categoryData).toExpenseCategoryEntity())
         eventPublisher.publishEvent(NetWorthEvent(user))
     }
 
-    fun findAllCategoryTotals(user: User): ExpenseCategoriesTotal {
-        val results = expenseRepository.findCategoryTotalsByUser(user.id)
-        val categories = results.map { result ->
-            CategoryTotal(
-                category = result["category"] as String,
-                total = (result["total"] as BigDecimal).negate() // find better solution here, and below can be cleaned up too
-            )
+    fun findAllCategoryTotals(user: User): CategoriesTotal {
+        val categories = expenseRepository.findCategoryTotalsByUser(user.id)
+            .map { result ->
+                CategoryTotal(
+                    category = result["category"] as String,
+                    total = (result["total"] as BigDecimal).negate() // negating so output on api is negative for expenses
+                )
+            }
+        val totalExpenses = user.accounts.sumOf { account ->
+            account?.expenses?.sumOf { it.amount }?.negate() ?: BigDecimal.ZERO
         }
-        var totalExpenses = BigDecimal.ZERO
-        user.accounts.forEach { account ->
-            totalExpenses += account?.expenses?.sumOf { it.amount }?.negate() ?: BigDecimal.ZERO
-        }
-        return ExpenseCategoriesTotal(categories = categories, totalExpenses = totalExpenses)
+
+        return CategoriesTotal(categories = categories, total = totalExpenses)
     }
 
     fun findAllByPage(user: User, pageNumber: Int, pageSize: Int, sortField: String, sortOrder: String): Page<Expense> {
@@ -71,8 +72,10 @@ class ExpenseService(
         return expenseRepository.findByUserIdAndId(user.id, expenseId)?.toModel()
     }
 
+    // keep userId in repo function or just remove it? issues with deleting, transactional is needed for some reason?
+    @Transactional
     fun deleteById(user: User, expenseId: UUID) {
-        expenseRepository.deleteByUserIdAndId(user.id, expenseId)
+        expenseRepository.deleteById(expenseId)
         eventPublisher.publishEvent(NetWorthEvent(user))
     }
 
@@ -85,6 +88,6 @@ class ExpenseService(
             expenseCategoryService.findById(user, request.categoryId) ?: throw Exception("Category doesn't exist")
 
         eventPublisher.publishEvent(NetWorthEvent(user))
-        expenseRepository.save(request.toModel(userData, categoryData).apply { id = expenseData.id }.toEntity())
+        expenseRepository.save(request.toModel(userData, categoryData).apply { id = expenseData.id }.toExpenseCategoryEntity())
     }
 }

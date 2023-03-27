@@ -26,7 +26,7 @@ interface ExpenseRepository : PagingAndSortingRepository<ExpenseEntity, UUID> {
 
     fun findByUserIdAndId(userId: UUID, expenseId: UUID): ExpenseEntity?
 
-    fun deleteByUserIdAndId(userId: UUID, expenseId: UUID)
+    fun deleteById(userId: UUID)
 
     fun save(expense: ExpenseEntity): ExpenseEntity
 

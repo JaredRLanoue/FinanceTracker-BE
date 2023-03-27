@@ -18,6 +18,9 @@ interface IncomeRepository : PagingAndSortingRepository<IncomeEntity, UUID> {
     @Query("SELECT i FROM IncomeEntity i WHERE i.user.id = :userId AND i.date BETWEEN :startDate AND :endDate")
     fun findIncomesByDateRange(userId: UUID, startDate: Instant, endDate: Instant): List<IncomeEntity>
 
+    @Query("SELECT c.name AS category, SUM(i.amount) AS total FROM IncomeEntity i JOIN i.category c WHERE i.user.id = :userId GROUP BY c.name, c.id")
+    fun findCategoryTotalsByUser(userId: UUID): List<Map<String, Any>>
+
     fun findAllByUserIdOrderByAmountDesc(userId: UUID): List<IncomeEntity>
 
     fun findAllByUserIdOrderByAmountAsc(userId: UUID): List<IncomeEntity>

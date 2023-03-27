@@ -9,8 +9,11 @@ import com.msum.finance.user.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/auth/user")
@@ -25,8 +28,8 @@ class UserController(@Autowired private val userService: UserService, @Autowired
         return userService.getByUserEmail(user.loginEmail)?.toView()
     }
 
-    @GetMapping("/create-example-data")
-    fun createExampleData() {
-        return exampleDataService.createExampleData()
+    @PostMapping("/create-example-data/{userId}")
+    fun createExampleData(@PathVariable userId: UUID) {
+        return exampleDataService.createExampleData(userId)
     }
 }

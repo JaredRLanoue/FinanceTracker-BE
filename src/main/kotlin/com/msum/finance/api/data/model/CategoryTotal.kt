@@ -10,7 +10,7 @@ data class CategoryTotal(
 )
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class ExpenseCategoriesTotal(
+data class CategoriesTotal(
     val categories: List<CategoryTotal>,
-    val totalExpenses: BigDecimal
+    val total: BigDecimal
 )
