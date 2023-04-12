@@ -6,11 +6,11 @@ import java.math.BigDecimal
 
 data class CategoryTotal(
     val category: String,
-    val total: BigDecimal
+    val total: BigDecimal,
+    val budget: BigDecimal
 )
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class CategoriesTotal(
-    val categories: List<CategoryTotal>,
-    val total: BigDecimal
+data class CategoriesView(
+    val categories: List<CategoryTotal>
 )

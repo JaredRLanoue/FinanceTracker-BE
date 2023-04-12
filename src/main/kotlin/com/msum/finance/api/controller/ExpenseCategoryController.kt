@@ -31,13 +31,13 @@ class ExpenseCategoryController(
         return expenseCategoryService.findById(user, categoryId)?.toView()
     }
 
-//    @DeleteMapping("/delete/{accountId}")
-//    fun deleteById(@AuthenticationPrincipal user: User, @PathVariable accountId: UUID) {
-//        return categoryService.deleteById(user, accountId)
-//    }
-//
-//    @PutMapping("/update/{accountId}")
-//    fun update(@AuthenticationPrincipal user: User, @RequestBody request: IncomeRequest, @PathVariable accountId: UUID) {
-//        return categoryService.update(user, request, accountId)
-//    }
+    @DeleteMapping("/delete/{categoryId}")
+    fun deleteById(@AuthenticationPrincipal user: User, @PathVariable categoryId: UUID) {
+        return expenseCategoryService.deleteById(user, categoryId) // ensure user exists in service?
+    }
+
+    @PutMapping("/update/{categoryId}")
+    fun update(@AuthenticationPrincipal user: User, @RequestBody request: CategoryRequest, @PathVariable categoryId: UUID) {
+        return expenseCategoryService.update(user, request, categoryId)
+    }
 }

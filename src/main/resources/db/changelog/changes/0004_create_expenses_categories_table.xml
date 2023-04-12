@@ -12,12 +12,16 @@
             </column>
             <column name="user_id" type="uuid"/>
             <column name="name" type="varchar(255)"/>
+            <column name="monthly_budget" type="numeric">
+                <constraints nullable="false"/>
+            </column>
             <column name="created_at" type="timestamptz">
                 <constraints nullable="false"/>
             </column>
             <column name="updated_at" type="timestamptz">
                 <constraints nullable="false"/>
             </column>
+
         </createTable>
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="expenses_categories"
@@ -26,8 +30,15 @@
                                  constraintName="fk_expense_category_user"
                                  onDelete="CASCADE"
         />
-        <!--        <sql splitStatements="false">-->
-        <!--            ALTER TABLE expenses_categories ADD CONSTRAINT unique_category_name_per_user UNIQUE (user_id, name);-->
-        <!--        </sql>-->
+        <addForeignKeyConstraint
+                baseColumnNames="category_id"
+                baseTableName="expenses"
+                referencedColumnNames="id"
+                referencedTableName="expenses_categories"
+                constraintName="fk_expense_category"
+                onDelete="CASCADE" />
+        <!--                <sql splitStatements="false">-->
+        <!--                    ALTER TABLE expenses_categories ADD CONSTRAINT unique_category_name_per_user UNIQUE (user_id, name);-->
+        <!--                </sql>-->
     </changeSet>
 </databaseChangeLog>

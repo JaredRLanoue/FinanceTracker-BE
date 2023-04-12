@@ -6,6 +6,7 @@ import com.msum.finance.user.data.entity.toModel
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import java.math.BigDecimal
 import java.time.Instant
 import java.util.UUID
 
@@ -18,6 +19,7 @@ class ExpenseCategoryEntity(
     @JoinColumn(name = "user_id")
     val user: UserEntity,
     val name: String,
+    val monthlyBudget: BigDecimal,
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: Instant = Instant.now(),
@@ -31,6 +33,7 @@ fun ExpenseCategoryEntity.toModel() =
         id = id,
         user = user.toModel(),
         name = name,
+        monthlyBudget = monthlyBudget,
         createdAt = createdAt,
         updatedAt = updatedAt
     )

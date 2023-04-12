@@ -1,6 +1,6 @@
 package com.msum.finance.api.controller
 
-import com.msum.finance.api.data.model.CategoriesTotal
+import com.msum.finance.api.data.model.CategoriesView
 import com.msum.finance.api.data.model.toView
 import com.msum.finance.api.data.request.IncomeRequest
 import com.msum.finance.api.data.view.IncomeView
@@ -43,7 +43,7 @@ class IncomeController(
 
     // separate into IncomeCategoryController or keep here?
     @GetMapping("/categories")
-    fun findCategoryTotals(@AuthenticationPrincipal user: User): CategoriesTotal {
+    fun findCategoryTotals(@AuthenticationPrincipal user: User): CategoriesView {
         return incomeService.findAllCategoryTotals(user)
     }
 }

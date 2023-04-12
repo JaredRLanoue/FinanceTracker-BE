@@ -31,19 +31,20 @@ class IncomeService(
         eventPublisher.publishEvent(NetWorthEvent(user))
     }
 
-    fun findAllCategoryTotals(user: User): CategoriesTotal {
+    fun findAllCategoryTotals(user: User): CategoriesView {
         val categories = incomeRepository.findCategoryTotalsByUser(user.id)
             .map { result ->
                 CategoryTotal(
                     category = result["category"] as String,
-                    total = (result["total"] as BigDecimal)
+                    total = result["total"] as BigDecimal,
+                    budget = BigDecimal.ZERO
                 )
             }
-        val totalExpenses = user.accounts.sumOf { account ->
-            account?.incomes?.sumOf { it.amount } ?: BigDecimal.ZERO
-        }
+//        val totalExpenses = user.accounts.sumOf { account ->
+//            account?.incomes?.sumOf { it.amount } ?: BigDecimal.ZERO
+//        }
 
-        return CategoriesTotal(categories = categories, total = totalExpenses)
+        return CategoriesView(categories = categories)
     }
 
     fun findAll(user: User): List<Income> {
@@ -61,7 +62,6 @@ class IncomeService(
         eventPublisher.publishEvent(NetWorthEvent(user))
     }
 
-    // Create an update request and change incomeRequest to incomeCreateRequest?
     fun update(user: User, request: IncomeRequest, incomeId: UUID) {
         userService.checkAccountExistsForUser(request.accountId, user)
         val userData = userService.getByUserEmail(user.loginEmail) ?: throw Exception("User doesn't exist!")

@@ -1,7 +1,7 @@
 package com.msum.finance.api.service
 
 import com.msum.finance.api.data.entity.toModel
-import com.msum.finance.api.data.model.CategoriesTotal
+import com.msum.finance.api.data.model.CategoriesView
 import com.msum.finance.api.data.model.CategoryTotal
 import com.msum.finance.api.data.model.Expense
 import com.msum.finance.api.data.model.toExpenseCategoryEntity
@@ -41,20 +41,32 @@ class ExpenseService(
         eventPublisher.publishEvent(NetWorthEvent(user))
     }
 
-    fun findAllCategoryTotals(user: User, sortMethod: String): CategoriesTotal {
+    fun findAllCategoryTotals(user: User, sortMethod: String): CategoriesView {
         val (startDate, endDate) = getSortMethodRange(sortMethod)
         val categories = expenseRepository.findCategoryTotalsByUserAndDateRange(user.id, startDate, endDate)
             .map { result ->
+                val category = result["category"] as String
+                val total = result["total"] as BigDecimal
+                val expenseCategory = expenseCategoryService.findByUserIdAndName(user, category)
+                var budget = expenseCategory?.monthlyBudget ?: BigDecimal.ZERO
+
+                when (sortMethod) {
+                    "year" -> budget *= BigDecimal.valueOf(12)
+                    "month" -> budget // budget remains the same
+                    "week" -> budget /= BigDecimal.valueOf(4.33)
+                    "all" -> BigDecimal.ZERO // won't be used for tracking budgets. only weekly, monthly, and yearly budgets will be viewable on the frontend. defaults to 0 for now.
+                }
+
                 CategoryTotal(
-                    category = result["category"] as String,
-                    total = (result["total"] as BigDecimal)
+                    category = category,
+                    total = total,
+                    budget = budget
                 )
             }
-        val totalExpenses = user.accounts.sumOf { account ->
-            account?.expenses?.sumOf { it.amount } ?: BigDecimal.ZERO
-        }
-        println("$startDate + $endDate")
-        return CategoriesTotal(categories = categories, total = totalExpenses)
+//        val totalExpenses = user.accounts.sumOf { account ->
+//            account?.expenses?.sumOf { it.amount } ?: BigDecimal.ZERO
+//        }
+        return CategoriesView(categories = categories)
     }
 
     fun getSortMethodRange(sortMethod: String): Pair<Instant, Instant> {

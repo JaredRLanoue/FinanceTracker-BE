@@ -17,6 +17,4 @@ interface ExpenseCategoryRepository : JpaRepository<ExpenseCategoryEntity, UUID>
     fun findByUserIdAndId(userId: UUID, expenseId: UUID): ExpenseCategoryEntity?
 
     fun findByUserIdAndName(userId: UUID, name: String): ExpenseCategoryEntity?
-
-    fun deleteByUserIdAndId(userId: UUID, id: UUID)
 }

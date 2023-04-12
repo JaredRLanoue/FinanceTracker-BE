@@ -5,9 +5,11 @@ import com.msum.finance.user.data.model.User
 import org.valiktor.functions.isNotEmpty
 import org.valiktor.functions.isNotNull
 import org.valiktor.validate
+import java.math.BigDecimal
 
 data class CategoryRequest(
-    val name: String
+    val name: String,
+    val monthlyBudget: BigDecimal
 ) {
     init {
         validate(this) {
@@ -15,11 +17,16 @@ data class CategoryRequest(
                 .isNotNull()
                 .isNotEmpty()
         }
+        validate(this) {
+            validate(CategoryRequest::monthlyBudget)
+                .isNotNull()
+        }
     }
 }
 
 fun CategoryRequest.toModel(user: User) =
     Category(
         name = name,
+        monthlyBudget = monthlyBudget,
         user = user
     )
