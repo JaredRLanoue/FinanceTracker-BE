@@ -35,7 +35,6 @@ interface ExpenseRepository : PagingAndSortingRepository<ExpenseEntity, UUID> {
     @Query("SELECT c.name AS category, SUM(e.amount) AS total FROM ExpenseEntity e JOIN e.category c WHERE e.user.id = :userId GROUP BY c.name, c.id")
     fun findCategoryTotalsByUser(userId: UUID): List<Map<String, Any>>
 
-    // combine into one, or keep separate?
-    @Query("SELECT c.name AS category, SUM(e.amount) AS total FROM ExpenseEntity e JOIN e.category c WHERE e.user.id = :userId AND e.date BETWEEN :startDate AND :endDate GROUP BY c.name")
+    @Query("SELECT c.name AS category, SUM(e.amount) AS total FROM ExpenseEntity e JOIN e.category c WHERE e.user.id = :userId AND e.date BETWEEN :startDate AND :endDate GROUP BY c.name, c.id")
     fun findCategoryTotalsByUserAndDateRange(userId: UUID, startDate: Instant, endDate: Instant): List<Map<String, Any>>
 }

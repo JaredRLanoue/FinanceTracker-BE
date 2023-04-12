@@ -46,7 +46,7 @@ class AuthenticationService(
     fun authenticate(request: AuthenticationRequest): AuthenticationResponse {
         authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
-                request.email,
+                request.email.lowercase(),
                 request.password
             )
         )

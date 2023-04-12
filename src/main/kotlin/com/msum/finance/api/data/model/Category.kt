@@ -19,7 +19,9 @@ data class Category(
 fun Category.toView() =
     CategoryView(
         id = id,
-        name = name
+        name = name,
+        createdAt = createdAt,
+        updatedAt = updatedAt
     )
 
 fun Category.toExpenseCategoryEntity() =

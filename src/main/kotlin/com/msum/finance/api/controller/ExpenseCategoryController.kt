@@ -3,6 +3,7 @@ package com.msum.finance.api.controller
 import com.msum.finance.api.data.model.toView
 import com.msum.finance.api.data.request.CategoryRequest
 import com.msum.finance.api.data.view.CategoryView
+import com.msum.finance.api.data.view.CategoryViewList
 import com.msum.finance.api.service.ExpenseCategoryService
 import com.msum.finance.user.data.model.User
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,8 +22,8 @@ class ExpenseCategoryController(
     }
 
     @GetMapping
-    fun findAll(@AuthenticationPrincipal user: User): List<CategoryView> {
-        return expenseCategoryService.findAll(user).map { it.toView() }
+    fun findAll(@AuthenticationPrincipal user: User): CategoryViewList {
+        return CategoryViewList(expenseCategoryService.findAll(user).map { it.toView() }) // needs view object
     }
 
     @GetMapping("/{categoryId}")
@@ -34,7 +35,7 @@ class ExpenseCategoryController(
 //    fun deleteById(@AuthenticationPrincipal user: User, @PathVariable accountId: UUID) {
 //        return categoryService.deleteById(user, accountId)
 //    }
-
+//
 //    @PutMapping("/update/{accountId}")
 //    fun update(@AuthenticationPrincipal user: User, @RequestBody request: IncomeRequest, @PathVariable accountId: UUID) {
 //        return categoryService.update(user, request, accountId)

@@ -6,7 +6,8 @@ import com.msum.finance.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
-import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
 import java.util.*
 
 @Service
@@ -18,59 +19,144 @@ class ExampleDataService(
     @Autowired private val accountRepository: AccountRepository,
     @Autowired private val incomeRepository: IncomeRepository
 ) {
-    // consider expanding this for testing purposes, add a much larger dataset for charting
     fun createExampleData(userId: UUID) {
         val user = repository.findById(userId).get()
+        val expenseCategories = expenseCategoryRepository.findAllByUserId(userId)
+        val incomeCategories = incomeCategoryRepository.findAllByUserId(userId)
 
-        val expenseCategory = expenseCategoryRepository.save(
-            ExpenseCategoryEntity(
-                name = "Retail",
-                user = user
-            )
+        val payerNames = listOf(
+            "Google Inc.",
+            "Amazon Web Services",
+            "Microsoft Corporation",
+            "Apple Inc.",
+            "Facebook Inc."
         )
 
-        val incomeCategory = incomeCategoryRepository.save(
-            IncomeCategoryEntity(
-                name = "Investments",
-                user = user
-            )
+        val merchantNames = listOf(
+            "Amazon",
+            "Walmart",
+            "Starbucks",
+            "Best Buy",
+            "Costco"
         )
 
-        val account = accountRepository.save(
+        val expenseDescriptions = listOf(
+            "Groceries at ${merchantNames.random()}",
+            "Shopping at ${merchantNames.random()}",
+            "Online shopping at ${merchantNames.random()}",
+            "Gas at ${merchantNames.random()}"
+        )
+
+        val incomeDescriptions = listOf(
+            "Paycheck from ${payerNames.random()}",
+            "Bonus from ${payerNames.random()}",
+            "Dividend payment from ${payerNames.random()}",
+            "Interest payment from ${payerNames.random()}"
+        )
+
+        val account1 = accountRepository.save(
             AccountEntity(
                 user = user,
                 name = "Chase Checking",
                 type = "Checking",
-                balance = BigDecimal(10000),
-                startingBalance = BigDecimal(10000),
+                balance = BigDecimal(0),
+                startingBalance = BigDecimal(0),
                 expenses = listOf(),
                 incomes = listOf()
             )
         )
 
-        expenseRepository.save(
-            ExpenseEntity(
-                accountId = account.id,
-                category = expenseCategory,
-                amount = BigDecimal(250),
-                description = "The Last of Us Collectors Edition",
-                merchantName = "GameStop",
-                pending = false,
-                date = Instant.now(),
-                user = user
+        val account2 = accountRepository.save(
+            AccountEntity(
+                user = user,
+                name = "Discover Savings",
+                type = "Savings",
+                balance = BigDecimal(0),
+                startingBalance = BigDecimal(0),
+                expenses = listOf(),
+                incomes = listOf()
             )
         )
 
-        incomeRepository.save(
-            IncomeEntity(
-                accountId = account.id,
-                category = incomeCategory,
+        val account3 = accountRepository.save(
+            AccountEntity(
                 user = user,
-                amount = BigDecimal(100),
-                date = Instant.now(),
-                payerName = "Bushel",
-                description = "Biweekly income"
+                name = "US Bank Credit Card",
+                type = "Credit",
+                balance = BigDecimal(0),
+                startingBalance = BigDecimal(0),
+                expenses = listOf(),
+                incomes = listOf()
             )
         )
+
+        val account4 = accountRepository.save(
+            AccountEntity(
+                user = user,
+                name = "Wells Fargo Checking",
+                type = "Checking",
+                balance = BigDecimal(0),
+                startingBalance = BigDecimal(0),
+                expenses = listOf(),
+                incomes = listOf()
+            )
+        )
+
+        val account5 = accountRepository.save(
+            AccountEntity(
+                user = user,
+                name = "American Express Savings",
+                type = "Savings",
+                balance = BigDecimal(0),
+                startingBalance = BigDecimal(0),
+                expenses = listOf(),
+                incomes = listOf()
+            )
+        )
+
+        val accountList = listOf(account1, account2, account3, account4, account5)
+
+        val random = Random()
+        val endDate = LocalDate.now()
+        val startDate = endDate.minusYears(2)
+
+        for (year in startDate.year..endDate.year) {
+            for (month in 1..12) {
+                val date = LocalDate.of(year, month, 1)
+                for (i in 1..20) {
+                    expenseRepository.save(
+                        ExpenseEntity(
+                            accountId = accountList.random().id,
+                            category = expenseCategories.random(),
+                            amount = random.nextInt(150).toBigDecimal(),
+                            description = expenseDescriptions.random(),
+                            merchantName = merchantNames.random(),
+                            pending = false,
+                            date = date.atStartOfDay().toInstant(ZoneOffset.UTC),
+                            user = user
+                        )
+                    )
+                }
+            }
+        }
+
+        for (year in startDate.year..endDate.year) {
+            for (month in 1..12) {
+                val date = LocalDate.of(year, month, 1)
+                for (i in 1..2) {
+                    incomeRepository.save(
+                        IncomeEntity(
+                            accountId = accountList.random().id,
+                            amount = random.nextInt(1000, 2500).toBigDecimal(),
+                            payerName = payerNames.random(),
+                            description = incomeDescriptions.random(),
+                            date = date.atStartOfDay().toInstant(ZoneOffset.UTC),
+                            user = user,
+                            category = incomeCategories.random()
+                        )
+                    )
+                }
+            }
+        }
     }
 }

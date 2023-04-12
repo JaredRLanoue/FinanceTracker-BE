@@ -15,7 +15,7 @@ class NetWorthService(
     @Autowired private val accountRepository: AccountRepository,
     @Autowired private val logger: Logger
 ) {
-    fun calculateNetWorth(user: User) {
+    fun calculateNetWorth(user: User) { // need to change how this is done. this is bad.
         val accounts = user.accounts
         val calculatedBalance = accounts.mapNotNull { account ->
             val startingBalance = account?.startingBalance ?: BigDecimal.ZERO
@@ -32,7 +32,7 @@ class NetWorthService(
             account?.balance = totalBalance
         }
 
-        accountRepository.saveAll(accounts)
+        accounts.filterNotNull().forEach { accountRepository.save(it) }
         userRepository.save(user.apply { netWorth = calculatedBalance }.toEntity())
         logger.info("Net worth and account balances calculated for user with ID: ${user.id}")
     }

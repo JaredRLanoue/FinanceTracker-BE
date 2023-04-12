@@ -11,7 +11,6 @@ import com.msum.finance.api.event.NetWorthEvent
 import com.msum.finance.api.repository.ExpenseRepository
 import com.msum.finance.user.data.model.User
 import com.msum.finance.user.service.UserService
-import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
@@ -19,6 +18,10 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.temporal.TemporalAdjusters
 import java.util.*
 
 @Service
@@ -38,19 +41,56 @@ class ExpenseService(
         eventPublisher.publishEvent(NetWorthEvent(user))
     }
 
-    fun findAllCategoryTotals(user: User): CategoriesTotal {
-        val categories = expenseRepository.findCategoryTotalsByUser(user.id)
+    fun findAllCategoryTotals(user: User, sortMethod: String): CategoriesTotal {
+        val (startDate, endDate) = getSortMethodRange(sortMethod)
+        val categories = expenseRepository.findCategoryTotalsByUserAndDateRange(user.id, startDate, endDate)
             .map { result ->
                 CategoryTotal(
                     category = result["category"] as String,
-                    total = (result["total"] as BigDecimal).negate() // negating so output on api is negative for expenses
+                    total = (result["total"] as BigDecimal)
                 )
             }
         val totalExpenses = user.accounts.sumOf { account ->
-            account?.expenses?.sumOf { it.amount }?.negate() ?: BigDecimal.ZERO
+            account?.expenses?.sumOf { it.amount } ?: BigDecimal.ZERO
         }
-
+        println("$startDate + $endDate")
         return CategoriesTotal(categories = categories, total = totalExpenses)
+    }
+
+    fun getSortMethodRange(sortMethod: String): Pair<Instant, Instant> {
+        val startDate: Instant
+        val endDate: Instant
+
+        when (sortMethod) {
+            "week" -> {
+                startDate = LocalDate.now().minusDays(6).atStartOfDay().toInstant(ZoneOffset.UTC)
+                endDate = LocalDate.now().plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)
+            }
+
+            "month" -> {
+                startDate = LocalDate.now().withDayOfMonth(1).atStartOfDay().toInstant(ZoneOffset.UTC)
+                endDate = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).atStartOfDay()
+                    .toInstant(ZoneOffset.UTC)
+            }
+
+            "year" -> {
+                startDate =
+                    LocalDate.now().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay().toInstant(ZoneOffset.UTC)
+                endDate =
+                    LocalDate.now().with(TemporalAdjusters.lastDayOfYear()).atStartOfDay().toInstant(ZoneOffset.UTC)
+            }
+
+            "all" -> {
+                startDate = LocalDate.MIN.atStartOfDay().toInstant(ZoneOffset.UTC)
+                endDate = LocalDate.of(9999, 12, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
+            }
+
+            else -> {
+                startDate = LocalDate.MIN.atStartOfDay().toInstant(ZoneOffset.UTC)
+                endDate = LocalDate.of(9999, 12, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
+            }
+        }
+        return Pair(startDate, endDate)
     }
 
     fun findAllByPage(user: User, pageNumber: Int, pageSize: Int, sortField: String, sortOrder: String): Page<Expense> {
@@ -73,7 +113,7 @@ class ExpenseService(
     }
 
     // keep userId in repo function or just remove it? issues with deleting, transactional is needed for some reason?
-    @Transactional
+    // @Transactional
     fun deleteById(user: User, expenseId: UUID) {
         expenseRepository.deleteById(expenseId)
         eventPublisher.publishEvent(NetWorthEvent(user))
@@ -88,6 +128,9 @@ class ExpenseService(
             expenseCategoryService.findById(user, request.categoryId) ?: throw Exception("Category doesn't exist")
 
         eventPublisher.publishEvent(NetWorthEvent(user))
-        expenseRepository.save(request.toModel(userData, categoryData).apply { id = expenseData.id }.toExpenseCategoryEntity())
+        expenseRepository.save(
+            request.toModel(userData, categoryData).apply { id = expenseData.id }
+                .toExpenseCategoryEntity()
+        )
     }
 }

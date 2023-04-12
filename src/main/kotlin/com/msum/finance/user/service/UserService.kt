@@ -13,7 +13,7 @@ class UserService(
     @Autowired private val repository: UserRepository
 ) {
     fun getByUsername(username: String): User {
-        return repository.findByLoginEmail(username)?.toModel() ?: throw Exception("Email not found")
+        return repository.findByLoginEmail(username)?.toModel() ?: throw Exception("Email not found") // update to correct describe what's happening, as this means user is not found
     }
 
     fun existsByUsername(email: String) {

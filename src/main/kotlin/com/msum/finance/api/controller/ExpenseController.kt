@@ -42,7 +42,7 @@ class ExpenseController(
     }
 
     @GetMapping("/categories")
-    fun findCategoryTotals(@AuthenticationPrincipal user: User): CategoriesTotal {
-        return expenseService.findAllCategoryTotals(user)
+    fun findCategoryTotals(@AuthenticationPrincipal user: User, @RequestParam(defaultValue = "all") sortMethod: String): CategoriesTotal {
+        return expenseService.findAllCategoryTotals(user, sortMethod)
     }
 }

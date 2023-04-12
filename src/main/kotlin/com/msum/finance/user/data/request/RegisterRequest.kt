@@ -35,7 +35,7 @@ data class RegisterRequest(
 fun RegisterRequest.createUser() = UserEntity(
     firstName = firstName,
     lastName = lastName,
-    loginEmail = email,
+    loginEmail = email.lowercase(),
     loginPassword = password,
     role = Role.USER
 )

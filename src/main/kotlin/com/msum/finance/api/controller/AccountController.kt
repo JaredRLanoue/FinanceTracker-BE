@@ -1,5 +1,6 @@
 package com.msum.finance.api.controller
 
+import com.msum.finance.api.data.model.AccountList
 import com.msum.finance.api.data.model.toView
 import com.msum.finance.api.data.request.AccountRequest
 import com.msum.finance.api.data.view.AccountView
@@ -21,8 +22,8 @@ class AccountController(
     }
 
     @GetMapping
-    fun findAll(@AuthenticationPrincipal user: User): List<AccountView> {
-        return accountService.findAll(user).map { it.toView() }
+    fun findAll(@AuthenticationPrincipal user: User, @RequestParam(defaultValue = "newest") sortMethod: String): AccountList { // TODO: Update to ascending?
+        return accountService.findAll(sortMethod, user) // TODO: add new view object later
     }
 
     @GetMapping("/{accountId}")
