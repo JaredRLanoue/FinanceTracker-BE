@@ -43,11 +43,9 @@ class IncomeCategoryService(
         val defaultCategories = listOf(
             "Wages",
             "Rental",
-            "Investment Gains",
+            "Investment",
             "Business",
-            "Gifts",
-            "Refunds and Reimbursements",
-            "Freelance"
+            "Miscellaneous"
         )
 
         defaultCategories.forEach { category ->

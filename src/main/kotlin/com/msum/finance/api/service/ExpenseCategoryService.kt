@@ -33,7 +33,7 @@ class ExpenseCategoryService(
     }
 
     fun findAll(user: User): List<Category> {
-        return expenseCategoryRepository.findAllByUserId(user.id).map { it.toModel() }
+        return expenseCategoryRepository.findAllByUserId(user.id).map { it.toModel() }.sortedBy { it.name }
     }
 
     fun findById(user: User, accountId: UUID): Category? {
@@ -57,17 +57,15 @@ class ExpenseCategoryService(
 
     fun saveDefaults(user: User) {
         val defaultCategories = listOf(
-            "Housing",
-            "Transportation",
-            "Food and Dining",
-            "Entertainment",
-            "Personal Care",
-            "Health Care",
-            "Debt"
+            "Housing" to BigDecimal(1000),
+            "Transportation" to BigDecimal(400),
+            "Food and Groceries" to BigDecimal(300),
+            "Entertainment" to BigDecimal(150),
+            "Health and Wellness" to BigDecimal(100)
         )
 
-        defaultCategories.forEach { category ->
-            expenseCategoryRepository.save(ExpenseCategoryEntity(name = category, user = user.toEntity(), monthlyBudget = BigDecimal(100)))
+        defaultCategories.forEach { (name, monthlyBudget) ->
+            expenseCategoryRepository.save(ExpenseCategoryEntity(name = name, user = user.toEntity(), monthlyBudget = monthlyBudget))
         }
     }
 

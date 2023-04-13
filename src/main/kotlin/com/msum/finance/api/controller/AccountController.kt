@@ -22,7 +22,10 @@ class AccountController(
     }
 
     @GetMapping
-    fun findAll(@AuthenticationPrincipal user: User, @RequestParam(defaultValue = "newest") sortMethod: String): AccountList { // TODO: Update to ascending?
+    fun findAll(
+        @AuthenticationPrincipal user: User,
+        @RequestParam(defaultValue = "newest") sortMethod: String
+    ): AccountList { // TODO: Update to ascending?
         return accountService.findAll(sortMethod, user) // TODO: add new view object later
     }
 
@@ -37,7 +40,11 @@ class AccountController(
     }
 
     @PutMapping("/update/{accountId}")
-    fun update(@AuthenticationPrincipal user: User, @RequestBody request: AccountRequest, @PathVariable accountId: UUID) {
+    fun update(
+        @AuthenticationPrincipal user: User,
+        @RequestBody request: AccountRequest,
+        @PathVariable accountId: UUID
+    ) {
         return accountService.update(user, request, accountId)
     }
 }
