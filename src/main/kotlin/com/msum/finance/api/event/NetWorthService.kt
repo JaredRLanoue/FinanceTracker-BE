@@ -22,18 +22,24 @@ class NetWorthService(
             val expenseTotal = account?.expenses?.sumOf { it.amount } ?: BigDecimal.ZERO
             val incomeTotal = account?.incomes?.sumOf { it.amount } ?: BigDecimal.ZERO
             startingBalance + expenseTotal + incomeTotal
-        }.fold(BigDecimal.ZERO) { acc, value -> acc.add(value) }
+        }.fold(BigDecimal.ZERO) { total, value -> total.add(value) }
 
-        for (account in accounts) {
+        accounts.forEach { account ->
             val startingBalance = account?.startingBalance ?: BigDecimal.ZERO
             val expenseTotal = account?.expenses?.sumOf { it.amount } ?: BigDecimal.ZERO
             val incomeTotal = account?.incomes?.sumOf { it.amount } ?: BigDecimal.ZERO
             val totalBalance = startingBalance + expenseTotal + incomeTotal
-            account?.balance = totalBalance
+
+            if (account != null && account.balance != totalBalance) {
+                account.balance = totalBalance
+                accountRepository.save(account)
+                logger.info("Account balances saved for user with ID: ${user.id}")
+            }
         }
 
-        accounts.filterNotNull().forEach { accountRepository.save(it) }
-        userRepository.save(user.apply { netWorth = calculatedBalance }.toEntity())
-        logger.info("Net worth and account balances calculated for user with ID: ${user.id}")
+        if (calculatedBalance != user.netWorth) {
+            userRepository.save(user.apply { netWorth = calculatedBalance }.toEntity())
+            logger.info("Net worth saved for user with ID: ${user.id}")
+        }
     }
 }

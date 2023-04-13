@@ -45,7 +45,6 @@ class AccountService(
         val accounts = accountRepository.findAllByUserId(sort, user.id).map { it.toModel() }
         val total = user.accounts.size
         val netWorth = user.netWorth
-//        val netWorth = calculateNetWorth(user)
         val average = if (accounts.isNotEmpty()) {
             (netWorth / accounts.size.toBigDecimal().setScale(2))
         } else {
@@ -76,17 +75,5 @@ class AccountService(
 
         eventPublisher.publishEvent(NetWorthEvent(user))
         accountRepository.save(request.toModel(userData).apply { id = accountData.id }.toEntity())
-    }
-
-    fun calculateNetWorth(user: User): BigDecimal {
-        val accounts = user.accounts
-        val calculatedBalance = accounts.mapNotNull { account ->
-            val startingBalance = account?.startingBalance ?: BigDecimal.ZERO
-            val expenseTotal = account?.expenses?.sumOf { it.amount } ?: BigDecimal.ZERO
-            val incomeTotal = account?.incomes?.sumOf { it.amount } ?: BigDecimal.ZERO
-            startingBalance + expenseTotal + incomeTotal
-        }.fold(BigDecimal.ZERO) { acc, value -> acc.add(value) }
-
-        return calculatedBalance
     }
 }

@@ -48,14 +48,7 @@ class ExpenseService(
                 val category = result["category"] as String
                 val total = result["total"] as BigDecimal
                 val expenseCategory = expenseCategoryService.findByUserIdAndName(user, category)
-                var budget = expenseCategory?.monthlyBudget ?: BigDecimal.ZERO
-
-                when (sortMethod) {
-                    "year" -> budget *= BigDecimal.valueOf(12)
-                    "month" -> budget // budget remains the same
-                    "week" -> budget /= BigDecimal.valueOf(4.33)
-                    "all" -> BigDecimal.ZERO // won't be used for tracking budgets. only weekly, monthly, and yearly budgets will be viewable on the frontend. defaults to 0 for now.
-                }
+                val budget = expenseCategory?.monthlyBudget ?: BigDecimal.ZERO
 
                 CategoryTotal(
                     category = category,
@@ -66,7 +59,7 @@ class ExpenseService(
 //        val totalExpenses = user.accounts.sumOf { account ->
 //            account?.expenses?.sumOf { it.amount } ?: BigDecimal.ZERO
 //        }
-        return CategoriesView(categories = categories)
+        return CategoriesView(categories = categories.sortedBy { it.category })
     }
 
     fun getSortMethodRange(sortMethod: String): Pair<Instant, Instant> {
