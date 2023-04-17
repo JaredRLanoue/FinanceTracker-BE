@@ -5,7 +5,7 @@ import com.msum.finance.api.service.IncomeCategoryService
 import com.msum.finance.user.data.entity.toModel
 import com.msum.finance.user.data.request.AuthenticationRequest
 import com.msum.finance.user.data.request.RegisterRequest
-import com.msum.finance.user.data.request.createUser
+import com.msum.finance.user.data.request.toUser
 import com.msum.finance.user.data.response.AuthenticationResponse
 import com.msum.finance.user.repository.UserRepository
 import org.apache.logging.log4j.Logger
@@ -31,7 +31,7 @@ class AuthenticationService(
             throw Exception("User already exists")
         }
 
-        val newUser = request.apply { password = encoder.encode(password) }.createUser()
+        val newUser = request.apply { password = encoder.encode(password) }.toUser()
         val savedUser = repository.save(newUser).toModel()
 
         expenseCategoryService.saveDefaults(savedUser)

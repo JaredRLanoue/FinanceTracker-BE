@@ -33,7 +33,7 @@ fun Income.toView() =
         updatedAt = updatedAt
     )
 
-fun Income.toIncomeCategoryEntity() =
+fun Income.toIncomeEntity() =
     IncomeEntity(
         id = id,
         amount = amount,

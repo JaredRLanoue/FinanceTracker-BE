@@ -32,7 +32,7 @@ data class RegisterRequest(
     }
 }
 
-fun RegisterRequest.createUser() = UserEntity(
+fun RegisterRequest.toUser() = UserEntity(
     firstName = firstName,
     lastName = lastName,
     loginEmail = email.lowercase(),

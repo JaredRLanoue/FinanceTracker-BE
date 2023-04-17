@@ -4,15 +4,12 @@ import com.msum.finance.api.service.ExampleDataService
 import com.msum.finance.user.data.entity.toModel
 import com.msum.finance.user.data.model.User
 import com.msum.finance.user.data.model.toView
+import com.msum.finance.user.data.request.UpdateRequest
 import com.msum.finance.user.data.view.UserView
 import com.msum.finance.user.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
@@ -28,8 +25,18 @@ class UserController(@Autowired private val userService: UserService, @Autowired
         return userService.getByUserEmail(user.loginEmail)?.toView()
     }
 
-    @PostMapping("/create-example-data/{userId}")
-    fun createExampleData(@PathVariable userId: UUID) {
-        return exampleDataService.createExampleData(userId)
+    @PostMapping("/create-example-data")
+    fun createExampleData(@AuthenticationPrincipal user: User) {
+        return exampleDataService.createExampleData(user.id)
+    }
+
+    @DeleteMapping("/delete")
+    fun delete(@AuthenticationPrincipal user: User) {
+        return userService.delete(user)
+    }
+
+    @PutMapping("/update")
+    fun update(@AuthenticationPrincipal user: User, @RequestBody request: UpdateRequest) {
+        return userService.update(user, request)
     }
 }

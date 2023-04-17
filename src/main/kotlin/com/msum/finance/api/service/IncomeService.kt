@@ -19,15 +19,17 @@ class IncomeService(
     @Autowired private val incomeRepository: IncomeRepository,
     @Autowired private val userService: UserService,
     @Autowired private val incomeCategoryService: IncomeCategoryService,
-    @Autowired private val eventPublisher: ApplicationEventPublisher
+    @Autowired private val eventPublisher: ApplicationEventPublisher,
+    @Autowired private val accountService: AccountService
 ) {
     fun create(user: User, request: IncomeRequest) {
         userService.checkAccountExistsForUser(request.accountId, user)
-        val userData = userService.getByUserEmail(user.loginEmail) ?: throw Exception("User doesn't exist")
         val categoryData =
             incomeCategoryService.findById(user, request.categoryId) ?: throw Exception("Category doesn't exist")
+//        val accountData =
+//            accountService.findById(user, request.categoryId) ?: throw Exception("Account doesn't exist")
 
-        incomeRepository.save(request.toModel(userData, categoryData).toIncomeCategoryEntity())
+        incomeRepository.save(request.toModel(user, categoryData).toIncomeEntity())
         eventPublisher.publishEvent(NetWorthEvent(user))
     }
 
@@ -57,21 +59,17 @@ class IncomeService(
         return incomeRepository.findByUserIdAndId(user.id, accountId)?.toModel()
     }
 
-    fun deleteById(user: User, incomeId: UUID) {
-        incomeRepository.deleteByUserIdAndId(user.id, incomeId)
-        eventPublisher.publishEvent(NetWorthEvent(user))
-    }
-
     fun update(user: User, request: IncomeRequest, incomeId: UUID) {
         userService.checkAccountExistsForUser(request.accountId, user)
-        val userData = userService.getByUserEmail(user.loginEmail) ?: throw Exception("User doesn't exist!")
         val incomeData =
             incomeRepository.findByUserIdAndId(user.id, incomeId)?.toModel() ?: throw Exception("Account doesn't exist")
         val categoryData =
             incomeCategoryService.findById(user, request.categoryId) ?: throw Exception("Category doesn't exist")
+//        val accountData =
+//            accountService.findById(user, request.categoryId) ?: throw Exception("Account doesn't exist")
 
         eventPublisher.publishEvent(NetWorthEvent(user))
-        incomeRepository.save(request.toModel(userData, categoryData).apply { id = incomeData.id }.toIncomeCategoryEntity())
+        incomeRepository.save(request.toModel(user, categoryData).apply { id = incomeData.id }.toIncomeEntity())
     }
 
     // TODO: Can potentially just put this into one function, with option to choose date range and sort order

@@ -31,5 +31,6 @@
                                  constraintName="fk_user_account"
                                  onDelete="CASCADE"
         />
+        <addUniqueConstraint tableName="accounts" columnNames="name, user_id"/>
     </changeSet>
 </databaseChangeLog>

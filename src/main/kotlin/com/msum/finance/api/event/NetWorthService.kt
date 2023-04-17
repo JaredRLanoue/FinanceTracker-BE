@@ -21,14 +21,14 @@ class NetWorthService(
             val startingBalance = account?.startingBalance ?: BigDecimal.ZERO
             val expenseTotal = account?.expenses?.sumOf { it.amount } ?: BigDecimal.ZERO
             val incomeTotal = account?.incomes?.sumOf { it.amount } ?: BigDecimal.ZERO
-            startingBalance + expenseTotal + incomeTotal
+            startingBalance - expenseTotal + incomeTotal
         }.fold(BigDecimal.ZERO) { total, value -> total.add(value) }
 
         accounts.forEach { account ->
             val startingBalance = account?.startingBalance ?: BigDecimal.ZERO
             val expenseTotal = account?.expenses?.sumOf { it.amount } ?: BigDecimal.ZERO
             val incomeTotal = account?.incomes?.sumOf { it.amount } ?: BigDecimal.ZERO
-            val totalBalance = startingBalance + expenseTotal + incomeTotal
+            val totalBalance = startingBalance - expenseTotal + incomeTotal
 
             if (account != null && account.balance != totalBalance) {
                 accountRepository.save(account.apply { balance = totalBalance })

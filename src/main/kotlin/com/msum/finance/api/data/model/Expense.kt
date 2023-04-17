@@ -35,7 +35,7 @@ fun Expense.toView() = ExpenseView(
 
 )
 
-fun Expense.toExpenseCategoryEntity() = ExpenseEntity(
+fun Expense.toExpenseEntity() = ExpenseEntity(
     id = id,
     accountId = accountId,
     category = category.toExpenseCategoryEntity(),

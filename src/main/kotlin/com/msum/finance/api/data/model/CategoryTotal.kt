@@ -12,5 +12,5 @@ data class CategoryTotal(
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class CategoriesView(
-    val categories: List<CategoryTotal>
+    val categories: List<CategoryTotal> = mutableListOf()
 )

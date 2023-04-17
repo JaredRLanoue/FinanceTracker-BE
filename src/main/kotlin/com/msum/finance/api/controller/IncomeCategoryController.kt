@@ -3,6 +3,7 @@ package com.msum.finance.api.controller
 import com.msum.finance.api.data.model.toView
 import com.msum.finance.api.data.request.CategoryRequest
 import com.msum.finance.api.data.view.CategoryView
+import com.msum.finance.api.data.view.CategoryViewList
 import com.msum.finance.api.service.IncomeCategoryService
 import com.msum.finance.user.data.model.User
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,8 +22,8 @@ class IncomeCategoryController(
     }
 
     @GetMapping
-    fun findAll(@AuthenticationPrincipal user: User): List<CategoryView> {
-        return incomeCategoryService.findAll(user).map { it.toView() }
+    fun findAll(@AuthenticationPrincipal user: User): CategoryViewList {
+        return CategoryViewList(incomeCategoryService.findAll(user).map { it.toView() })
     }
 
     @GetMapping("/{categoryId}")

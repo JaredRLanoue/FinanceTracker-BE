@@ -15,7 +15,7 @@ import java.util.*
 @Table(name = "users")
 data class UserEntity(
     @Id
-    val id: UUID = UUID.randomUUID(),
+    var id: UUID = UUID.randomUUID(),
     val firstName: String,
     val lastName: String,
     val loginEmail: String,

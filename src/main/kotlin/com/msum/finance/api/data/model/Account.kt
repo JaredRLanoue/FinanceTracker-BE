@@ -42,6 +42,6 @@ fun Account.toEntity() =
         type = type,
         balance = balance,
         startingBalance = startingBalance,
-        expenses = expenses.map { it.toExpenseCategoryEntity() },
-        incomes = incomes.map { it.toIncomeCategoryEntity() }
+        expenses = expenses.map { it.toExpenseEntity() },
+        incomes = incomes.map { it.toIncomeEntity() }
     )

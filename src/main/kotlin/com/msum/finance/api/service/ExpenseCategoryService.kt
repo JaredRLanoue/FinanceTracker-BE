@@ -2,12 +2,16 @@ package com.msum.finance.api.service
 
 import com.msum.finance.api.data.entity.ExpenseCategoryEntity
 import com.msum.finance.api.data.entity.toModel
+import com.msum.finance.api.data.model.CategoriesView
 import com.msum.finance.api.data.model.Category
+import com.msum.finance.api.data.model.CategoryTotal
 import com.msum.finance.api.data.model.toExpenseCategoryEntity
 import com.msum.finance.api.data.request.CategoryRequest
 import com.msum.finance.api.data.request.toModel
 import com.msum.finance.api.event.NetWorthEvent
 import com.msum.finance.api.repository.ExpenseCategoryRepository
+import com.msum.finance.api.repository.ExpenseRepository
+import com.msum.finance.common.utility.SortingUtils
 import com.msum.finance.user.data.model.User
 import com.msum.finance.user.data.model.toEntity
 import com.msum.finance.user.service.UserService
@@ -20,6 +24,7 @@ import java.util.*
 @Service
 class ExpenseCategoryService(
     @Autowired private val expenseCategoryRepository: ExpenseCategoryRepository,
+    @Autowired private val expenseRepository: ExpenseRepository,
     @Autowired private val userService: UserService,
     @Autowired private val eventPublisher: ApplicationEventPublisher
 ) {
@@ -33,7 +38,7 @@ class ExpenseCategoryService(
     }
 
     fun findAll(user: User): List<Category> {
-        return expenseCategoryRepository.findAllByUserId(user.id).map { it.toModel() }.sortedBy { it.name }
+        return expenseCategoryRepository.findAllByUserId(user.id).map { it.toModel() }.sortedBy { it.createdAt }
     }
 
     fun findById(user: User, accountId: UUID): Category? {
@@ -72,5 +77,23 @@ class ExpenseCategoryService(
     fun saveNewNetWorth(user: User) {
         val updatedUserData = userService.getByUserEmail(user.loginEmail) ?: throw Exception("User doesn't exist")
         eventPublisher.publishEvent(NetWorthEvent(updatedUserData))
+    }
+
+    fun calculateTotals(user: User, sortMethod: String): CategoriesView {
+        val categories = findAll(user)
+        val (startDate, endDate) = SortingUtils.getSortMethodRange(sortMethod)
+        val expenses = expenseRepository.findAllExpensesByUserIdAndDateRange(user.id, startDate, endDate)
+        val listOfCategoryTotal: MutableList<CategoryTotal> = mutableListOf()
+
+        for (category in categories) {
+            var expenseTotal = BigDecimal.ZERO
+            for (expense in expenses.filter { it.category.id == category.id }) {
+                expenseTotal += expense.amount
+            }
+            val categoryTotal = CategoryTotal(category.name, expenseTotal, category.monthlyBudget)
+            listOfCategoryTotal += categoryTotal
+        }
+
+        return CategoriesView(listOfCategoryTotal)
     }
 }

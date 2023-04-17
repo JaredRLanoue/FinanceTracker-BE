@@ -1,8 +1,6 @@
 package com.msum.finance.api.controller
 
-import com.msum.finance.api.data.model.CategoriesView
 import com.msum.finance.api.data.model.toView
-import com.msum.finance.api.data.request.ExpenseRequest
 import com.msum.finance.api.data.view.ExpenseView
 import com.msum.finance.api.service.ExpenseService
 import com.msum.finance.user.data.model.User
@@ -16,10 +14,10 @@ import java.util.UUID
 class ExpenseController(
     @Autowired private val expenseService: ExpenseService
 ) {
-    @PostMapping("/create")
-    fun create(@AuthenticationPrincipal user: User, @RequestBody request: ExpenseRequest) {
-        return expenseService.create(user, request)
-    }
+//    @PostMapping("/create")
+//    fun create(@AuthenticationPrincipal user: User, @RequestBody request: ExpenseRequest) {
+//        return expenseService.create(user, request)
+//    }
 
     @GetMapping
     fun findAll(@AuthenticationPrincipal user: User): List<ExpenseView> {
@@ -36,13 +34,8 @@ class ExpenseController(
         return expenseService.deleteById(user, expenseId)
     }
 
-    @PutMapping("/update/{expenseId}")
-    fun update(@AuthenticationPrincipal user: User, @RequestBody request: ExpenseRequest, @PathVariable expenseId: UUID) {
-        return expenseService.update(user, request, expenseId)
-    }
-
-    @GetMapping("/categories")
-    fun findCategoryTotals(@AuthenticationPrincipal user: User, @RequestParam(defaultValue = "all") sortMethod: String): CategoriesView {
-        return expenseService.findAllCategoryTotals(user, sortMethod)
-    }
+//    @PutMapping("/update/{expenseId}")
+//    fun update(@AuthenticationPrincipal user: User, @RequestBody request: ExpenseRequest, @PathVariable expenseId: UUID) {
+//        return expenseService.update(user, request, expenseId)
+//    }
 }

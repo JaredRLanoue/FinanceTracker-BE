@@ -3,6 +3,9 @@ package com.msum.finance.user.service
 import com.msum.finance.user.data.entity.UserEntity
 import com.msum.finance.user.data.entity.toModel
 import com.msum.finance.user.data.model.User
+import com.msum.finance.user.data.model.toEntity
+import com.msum.finance.user.data.request.UpdateRequest
+import com.msum.finance.user.data.request.toUser
 import com.msum.finance.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -34,5 +37,16 @@ class UserService(
         if (accountId !in user.accounts.map { it?.id }) {
             throw Exception("Account doesn't exist for the user")
         }
+    }
+
+    fun delete(user: User) {
+        repository.delete(user.toEntity())
+    }
+
+    fun update(user: User, request: UpdateRequest) {
+        if (request.email == null && request.firstName == null && request.lastName == null) {
+            return
+        }
+        repository.save(request.toUser(user).apply { id = user.id })
     }
 }

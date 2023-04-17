@@ -31,10 +31,10 @@ class IncomeController(
         return incomeService.findById(user, accountId)?.toView()
     }
 
-    @DeleteMapping("/delete/{accountId}")
-    fun deleteById(@AuthenticationPrincipal user: User, @PathVariable accountId: UUID) {
-        return incomeService.deleteById(user, accountId)
-    }
+//    @DeleteMapping("/delete/{accountId}")
+//    fun deleteById(@AuthenticationPrincipal user: User, @PathVariable accountId: UUID) {
+//        return incomeService.deleteById(user, accountId)
+//    }
 
     @PutMapping("/update/{accountId}")
     fun update(@AuthenticationPrincipal user: User, @RequestBody request: IncomeRequest, @PathVariable accountId: UUID) {
