@@ -134,11 +134,11 @@ class ExampleDataService(
             val endMonth = if (year == endDate.year) endDate.monthValue else 12
             for (month in 1..endMonth) {
                 val date = LocalDate.of(year, month, 1)
-                for (i in 1..5) {
+                for (i in 1..7) {
                     expenseRepository.save(
                         ExpenseEntity(
                             accountId = accountList.random().id,
-                            category = expenseCategories[i - 1],
+                            category = expenseCategories.random(),
                             amount = (random.nextInt(5, 151) + random.nextDouble(0.00, 1.00)).toBigDecimal()
                                 .setScale(2, RoundingMode.HALF_UP),
                             description = expenseDescriptions.random(),

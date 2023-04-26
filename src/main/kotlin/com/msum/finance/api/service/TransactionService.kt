@@ -26,7 +26,6 @@ class TransactionService(
     @Autowired private val accountRepository: AccountRepository,
     @Autowired private val eventPublisher: ApplicationEventPublisher
 ) {
-    // needs a redesign, transactions all into one table. that way we can sort all and add paging easily. current implementation complicates that - will do this at a later date.
     fun findAllTransactionsByQuery(sortMethod: String, type: String?, user: User): TransactionList {
         val sort: Sort = when (sortMethod) {
             "newest" -> Sort.by(Sort.Direction.DESC, "date")
@@ -161,37 +160,6 @@ class TransactionService(
         }
     }
 
-//    fun calculateTotalIncomesOverTime(user: User): List<TransactionChart> {
-//        val incomes = incomeRepository.findAllByUserId(user.id).map { it.toModel() }
-//        val incomesByDate = incomes.groupBy { it.date.truncatedTo(ChronoUnit.DAYS) }
-//        val totalIncomesByDate = mutableMapOf<Instant, BigDecimal>()
-//        var runningTotal = BigDecimal.ZERO
-//        val transactionChartList = mutableListOf<TransactionChart>()
-//        for ((date, incomesOnDate) in incomesByDate.entries.sortedBy { it.key }) {
-//            val totalOnDate = incomesOnDate.map { it.amount }.reduce { acc, amount -> acc + amount }
-//            runningTotal += totalOnDate
-//            totalIncomesByDate[date] = runningTotal
-//            transactionChartList.add(TransactionChart(date, runningTotal))
-//        }
-//        return transactionChartList
-//    }
-//
-//    fun calculateTotalExpensesOverTime(user: User): List<TransactionChart> {
-//        val expenses = expenseRepository.findAllByUserId(user.id).map { it.toModel() }
-//        val expensesByDate = expenses.groupBy { it.date.truncatedTo(ChronoUnit.DAYS) }
-//        val totalExpensesByDate = mutableMapOf<Instant, BigDecimal>()
-//        var runningTotal = BigDecimal.ZERO
-//        val transactionChartList = mutableListOf<TransactionChart>()
-//        for ((date, incomesOnDate) in expensesByDate.entries.sortedBy { it.key }) {
-//            val totalOnDate = incomesOnDate.map { it.amount }.reduce { acc, amount -> acc + amount }
-//            runningTotal += totalOnDate
-//            totalExpensesByDate[date] = runningTotal
-//            transactionChartList.add(TransactionChart(date, runningTotal))
-//        }
-//        return transactionChartList
-//    }
-
-    // group by month instead
     fun calculateExpensesOverTime(user: User): List<TransactionChart> {
         val expenses = expenseRepository.findAllByUserId(user.id).map { it.toModel() }
         val expensesByMonth = expenses.groupBy { it.date.atZone(ZoneOffset.UTC).toLocalDate().let { date -> YearMonth.of(date.year, date.month) } }
